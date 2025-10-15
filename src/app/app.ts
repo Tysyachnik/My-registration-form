@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Registration } from './registration/registration';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [Registration],
+  standalone: true,
   templateUrl: './app.html',
-  styleUrl: './app.less'
+  styleUrl: './app.less',
 })
 export class App {
   protected readonly title = signal('my-registration-form');

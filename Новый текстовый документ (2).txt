@@ -1,0 +1,8 @@
+*uI library: angular material
+ внутри будут степперы
+
+форма наверху и она будет передаваться внутрь каждой табы 
+
+
+-LocalStorage
+-datapicker, 

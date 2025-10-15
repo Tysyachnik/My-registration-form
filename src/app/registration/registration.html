@@ -1,0 +1,45 @@
+<p-stepper [value]="activeStep()" class="max-w-4xl mx-auto">
+  <p-step-list>
+    <p-step [value]="1">Method</p-step>
+    <p-step [value]="2">Basic</p-step>
+    <p-step [value]="3">Additional</p-step>
+    <p-step [value]="4">Confirm</p-step>
+  </p-step-list>
+
+  <p-step-panels>
+    <p-step-panel [value]="1">
+      <ng-template #content let-activateCallback="activateCallback">
+        <app-first-method [group]="methodGroup"></app-first-method>
+        <div class="flex justify-end pt-6">
+          <p-button label="next" (onClick)="activateCallback(2)"> </p-button>
+        </div>
+      </ng-template>
+    </p-step-panel>
+    <p-step-panel [value]="2">
+      <ng-template #content let-activateCallback="activateCallback">
+        <app-second-basic [group]="basicGroup"></app-second-basic>
+        <div class="flex justify-end pt-6">
+          <p-button label="back" (onClick)="activateCallback(1)"> </p-button>
+          <p-button label="next" (onClick)="activateCallback(3)"> </p-button>
+        </div>
+      </ng-template>
+    </p-step-panel>
+    <p-step-panel [value]="3">
+      <ng-template #content let-activateCallback="activateCallback">
+        <app-third-extra [group]="extraGroup"></app-third-extra>
+        <div class="flex justify-end pt-6">
+          <p-button label="back" (onClick)="activateCallback(2)"> </p-button>
+          <p-button label="next" (onClick)="activateCallback(4)"> </p-button>
+        </div>
+      </ng-template>
+    </p-step-panel>
+    <p-step-panel [value]="4">
+      <ng-template #content>
+        <app-fourth-confirm [group]="confirmGroup" (submitForm)="onSubmit()"></app-fourth-confirm>
+        <div class="flex justify-end pt-6">
+          <p-button label="back" (onClick)="goTo(3)"> </p-button>
+        </div>
+      </ng-template>
+    </p-step-panel>
+  </p-step-panels>
+</p-stepper>

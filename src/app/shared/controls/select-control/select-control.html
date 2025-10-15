@@ -1,0 +1,13 @@
+<label class="w-full">
+  <p-auto-complete
+    [(ngModel)]="value"
+    [dropdown]="true"
+    (ngModelChange)="onModelChange($event)"
+    [suggestions]="filteredOptions"
+    field="optionLabel"
+    (completeMethod)="search($event)"
+    forceSelection="true"
+    (onBlur)="onTouched()"
+  />
+  <span class="text-sm text-gray-700">{{ label }}</span>
+</label>
