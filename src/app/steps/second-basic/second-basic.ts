@@ -21,7 +21,9 @@ export class SecondBasic {
     { name: 'Germany', code: 'DE' },
   ];
 
-  form = new FormGroup({
-    country: new FormControl({ name: 'Russia', code: 'RU' }),
-  });
+  // countries = [
+  //   { label: 'Russia', code: 'RU' },
+  //   { label: 'USA', code: 'US' },
+  //   { label: 'Germany', code: 'DE' },
+  // ];
 }

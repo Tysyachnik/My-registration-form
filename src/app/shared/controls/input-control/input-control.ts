@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, Input } from '@angular/core';
+import { BaseControl } from '../base-control/base-control';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-input-control',
@@ -16,28 +17,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     },
   ],
 })
-export class InputControl implements ControlValueAccessor {
+export class InputControl extends BaseControl<any> {
   @Input() label = '';
   @Input() type = 'text';
-
-  value = '';
-  disabled = false;
-
-  onChange = (val: any) => {};
-  onTouched = () => {};
-
-  writeValue(val: any): void {
-    this.value = val;
-  }
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
 
   handleInput(event: Event) {
     const val = (event.target as HTMLInputElement).value;

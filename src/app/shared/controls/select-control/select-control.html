@@ -4,10 +4,11 @@
     [dropdown]="true"
     (ngModelChange)="onModelChange($event)"
     [suggestions]="filteredOptions"
-    field="optionLabel"
     (completeMethod)="search($event)"
     forceSelection="true"
+    field="optionLabel"
     (onBlur)="onTouched()"
   />
+
   <span class="text-sm text-gray-700">{{ label }}</span>
 </label>

@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
+import { BaseControl } from '../base-control/base-control';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-phone-control',
@@ -6,5 +8,12 @@ import { Component } from '@angular/core';
   standalone: true,
   templateUrl: './phone-control.html',
   styleUrl: './phone-control.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PhoneControl),
+      multi: true,
+    },
+  ],
 })
-export class PhoneControl {}
+export class PhoneControl extends BaseControl<any> {}

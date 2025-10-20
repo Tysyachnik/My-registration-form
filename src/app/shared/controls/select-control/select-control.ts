@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AutoComplete } from 'primeng/autocomplete';
+import { BaseControl } from '../base-control/base-control';
 
 @Component({
   selector: 'app-select-control',
   standalone: true,
-  imports: [AutoCompleteModule, CommonModule, FormsModule],
+  imports: [AutoComplete, CommonModule, FormsModule],
   templateUrl: './select-control.html',
   styleUrl: './select-control.less',
   providers: [
@@ -17,47 +18,29 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     },
   ],
 })
-export class SelectControl implements ControlValueAccessor {
+export class SelectControl extends BaseControl<any> {
   @Input() label = 'Chose';
   @Input() optionLabel = 'name';
   @Input() options: any[] = [];
+  @Input() optionValue = 'value';
 
-  value: any = null;
   filteredOptions: any[] = [];
 
-  disabled = false;
-
-  onChange: (value: any) => void = () => {};
-  onTouched: () => void = () => {};
-
   search(event: { query: string }) {
-    const query = event.query.toLowerCase();
-    this.filteredOptions = this.options.filter((option) =>
-      option[this.optionLabel].toLowerCase().includes(query)
-    );
+    const query = (event.query || '').toLowerCase();
+
+    this.filteredOptions = this.options.filter((option) => {
+      console.log('option value:', option[this.optionLabel]);
+      return option[this.optionLabel].toLowerCase().includes(query);
+    });
   }
 
   ngOnInit() {
     this.filteredOptions = [...this.options];
   }
-
-  writeValue(val: any): void {
-    const selectedOption = this.options.find(
-      (option) => option === val || (option && option.code === val)
-    );
-    this.value = selectedOption ?? null;
-  }
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-  onModelChange(value: any): void {
-    this.value = value;
-    this.onChange(this.value);
+  onModelChange(selectedObject: any): void {
+    this.value = selectedObject;
+    const newValue = selectedObject ? selectedObject[this.optionValue] : null;
+    this.onChange(newValue);
   }
 }
