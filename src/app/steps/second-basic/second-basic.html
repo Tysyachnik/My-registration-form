@@ -5,8 +5,11 @@
     formControlName="country"
     [options]="countries"
     placeholder="Choose the Country"
-    optionLabel="name"
+    optionLabel="label"
     optionValue="code"
   ></app-select-control>
-  <app-phone-control formControlName="phone"></app-phone-control>
+
+  @if(isPhoneVisible) {
+  <app-phone-control formControlName="phone" [mask]="selectedCountryCode()"></app-phone-control>
+  }
 </form>

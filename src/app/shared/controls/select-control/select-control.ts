@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AutoComplete } from 'primeng/autocomplete';
 import { BaseControl } from '../base-control/base-control';
@@ -18,13 +18,17 @@ import { BaseControl } from '../base-control/base-control';
     },
   ],
 })
-export class SelectControl extends BaseControl<any> {
+export class SelectControl extends BaseControl<any> implements OnInit {
   @Input() label = 'Chose';
   @Input() optionLabel = 'name';
   @Input() options: any[] = [];
-  @Input() optionValue = 'value';
+  @Input() optionValue: string = 'value';
 
   filteredOptions: any[] = [];
+
+  ngOnInit() {
+    this.filteredOptions = [...this.options];
+  }
 
   search(event: { query: string }) {
     const query = (event.query || '').toLowerCase();
@@ -35,9 +39,6 @@ export class SelectControl extends BaseControl<any> {
     });
   }
 
-  ngOnInit() {
-    this.filteredOptions = [...this.options];
-  }
   onModelChange(selectedObject: any): void {
     this.value = selectedObject;
     const newValue = selectedObject ? selectedObject[this.optionValue] : null;

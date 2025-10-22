@@ -53,6 +53,21 @@ export class Registration {
         newsletter: [false],
       }),
     });
+
+    const saved = localStorage.getItem('registrationForm');
+    if (saved) {
+      try {
+        this.form.patchValue(JSON.parse(saved));
+        console.log('Form restored from localStorage:', JSON.parse(saved));
+      } catch (error) {
+        console.warn('Failed to parse saved form', error);
+      }
+    }
+
+    this.form.valueChanges.subscribe((value) => {
+      localStorage.setItem('registrationForm', JSON.stringify(value));
+      console.log('Form saved to localStorage:', value);
+    });
   }
 
   get methodGroup(): FormGroup {

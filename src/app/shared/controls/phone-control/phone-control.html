@@ -1,1 +1,13 @@
-<p>phone-control works!</p>
+<label class="w-full flex flex-col gap-1">
+  <input
+    type="tel"
+    class="p-inputtext p-component w-full"
+    placeholder="Enter phone number"
+    [mask]="showMask()"
+    [(ngModel)]="value"
+    [disabled]="disabled"
+    (ngModelChange)="onModelChange($event)"
+    (blur)="onTouched()"
+  />
+  <small class="text-gray-500">Format: {{ showMask() }}</small>
+</label>
