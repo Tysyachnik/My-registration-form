@@ -1,26 +1,53 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormsModule } from '@angular/forms';
-import { RadioButton } from 'primeng/radiobutton';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+  ControlValueAccessor,
+} from '@angular/forms';
+import { RadioControl } from '../../shared/controls/radio-control/radio-control';
 
 @Component({
   selector: 'app-first-method',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RadioButton, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, RadioControl, FormsModule],
   templateUrl: './first-method.html',
   styleUrl: './first-method.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FirstMethod),
+      multi: true,
+    },
+  ],
 })
-export class FirstMethod {
-  @Input() group!: FormGroup;
-  ingredient!: string;
+export class FirstMethod implements ControlValueAccessor {
+  @Input() activateCallback!: (step: number) => void;
 
-  @Output() socialSelected = new EventEmitter<void>();
+  value: string = '';
 
-  ngOnInit() {
-    this.group.get('type')?.valueChanges.subscribe((value) => {
-      if (value === 'social') {
-        this.socialSelected.emit();
-      }
-    });
+  private onChange: any = () => {};
+  private onTouched: any = () => {};
+
+  writeValue(val: string): void {
+    this.value = val;
+  }
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setValue(val: string) {
+    this.value = val;
+    this.onChange(this.value);
+    this.onTouched();
+
+    if (val === 'social' && this.activateCallback) {
+      this.activateCallback(4);
+      console.log('Social selected — emitting event');
+    }
   }
 }

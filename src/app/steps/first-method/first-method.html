@@ -1,20 +1,8 @@
-<form [formGroup]="group" class="flex gap-4">
-  <!-- <div class="card flex justify-center">
-    <div class="flex flex-wrap gap-4">
-        <div class="flex items-center">
-            <p-radiobutton name="pizza" value="Cheese" [(ngModel)]="ingredient" inputId="ingredient1" />
-            <label for="ingredient1" class="ml-2">Email</label>
-        </div>
-
-        <div class="flex items-center">
-            <p-radiobutton name="pizza" value="Mushroom" [(ngModel)]="ingredient" inputId="ingredient2" />
-            <label for="ingredient2" class="ml-2">Social</label>
-        </div>
-
-        
-    </div>
-</div> -->
-
-  <label><input type="radio" value="email" formControlName="type" />Email</label>
-  <label><input type="radio" value="social" formControlName="type" />Social</label>
-</form>
+<div class="flex gap-4">
+  <app-radio-control value="email" label="Email" (change)="setValue('email')"></app-radio-control>
+  <app-radio-control
+    value="social"
+    label="Social"
+    (change)="setValue('social')"
+  ></app-radio-control>
+</div>

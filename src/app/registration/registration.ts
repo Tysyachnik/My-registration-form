@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Step, StepPanel, StepperModule } from 'primeng/stepper';
 import { FourthConfirm } from '../steps/fourth-confirm/fourth-confirm';
 import { ThirdExtra } from '../steps/third-extra/third-extra';
@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './registration.html',
   styleUrl: './registration.less',
 })
-export class Registration {
+export class Registration implements OnInit {
   activeStep = signal<number>(1);
 
   form: FormGroup;
@@ -34,7 +34,7 @@ export class Registration {
   constructor(private fb: FormBuilder) {
     this.form = fb.group({
       method: fb.group({
-        type: ['email', Validators.required],
+        type: [null, Validators.required],
       }),
       basic: fb.group({
         email: ['', [Validators.required, Validators.email]],
@@ -67,6 +67,16 @@ export class Registration {
     this.form.valueChanges.subscribe((value) => {
       localStorage.setItem('registrationForm', JSON.stringify(value));
       console.log('Form saved to localStorage:', value);
+    });
+  }
+
+  ngOnInit() {
+    this.methodGroup.get('type')?.valueChanges.subscribe((val) => {
+      console.log('type changed:', val);
+      if (val === 'social') {
+        console.log('Activating step 4');
+        this.activeStep.set(4);
+      }
     });
   }
 

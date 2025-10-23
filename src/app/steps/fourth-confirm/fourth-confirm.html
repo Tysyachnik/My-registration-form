@@ -1,5 +1,26 @@
-<form [formGroup]="group" class="flex flex-col gap-2">
-  <label><input type="checkbox" formControlName="terms" />Accept the terms</label>
-  <label><input type="checkbox" formControlName="data" />I agree to the processing of data</label>
-  <label><input type="checkbox" formControlName="newsletter" />Subscribe to the newsletter</label>
-</form>
+<div class="flex flex-col gap-2">
+  <app-radio-control
+    label="Accept the terms"
+    [(ngModel)]="value.terms"
+    (ngModelChange)="onSelect('terms', $event)"
+  ></app-radio-control>
+
+  <app-radio-control
+    label="I agree to the processing of data"
+    [(ngModel)]="value.data"
+    (ngModelChange)="onSelect('data', $event)"
+  ></app-radio-control>
+
+  <app-radio-control
+    label="Subscribe to the newsletter"
+    [(ngModel)]="value.newsletter"
+    (ngModelChange)="onSelect('newsletter', $event)"
+  ></app-radio-control>
+
+  <p-button
+    label="Finish registration"
+    [disabled]="!isFormValid"
+    (onClick)="submit()"
+    class="mt-4"
+  ></p-button>
+</div>

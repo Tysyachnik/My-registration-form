@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   EnvironmentInjector,
+  forwardRef,
   inject,
   Input,
   OnInit,
@@ -12,7 +13,7 @@ import {
 import { InputControl } from '../../shared/controls/input-control/input-control';
 import { SelectControl } from '../../shared/controls/select-control/select-control';
 import { PhoneControl } from '../../shared/controls/phone-control/phone-control';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -62,10 +63,5 @@ export class SecondBasic implements OnInit {
         console.log('[effect] selectedCountryCode signal now =', this.selectedCountryCode());
       });
     });
-    // countries = [
-    //   { name: 'Russia', code: 'RU' },
-    //   { name: 'USA', code: 'US' },
-    //   { name: 'Germany', code: 'DE' },
-    // ];
   }
 }
