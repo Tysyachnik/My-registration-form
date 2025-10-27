@@ -3,11 +3,9 @@
     type="tel"
     class="p-inputtext p-component w-full"
     placeholder="Enter phone number"
-    [mask]="showMask()"
-    [(ngModel)]="value"
-    [disabled]="disabled"
-    (ngModelChange)="onModelChange($event)"
+    [mask]="maskSignal()"
+    [formControl]="innerControl"
     (blur)="onTouched()"
   />
-  <small class="text-gray-500">Format: {{ showMask() }}</small>
+  <small class="text-gray-500">Format: {{ maskSignal() }}</small>
 </label>

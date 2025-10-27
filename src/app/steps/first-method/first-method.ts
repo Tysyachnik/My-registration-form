@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, Output } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormsModule,
   NG_VALUE_ACCESSOR,
   ControlValueAccessor,
+  FormControl,
 } from '@angular/forms';
 import { RadioControl } from '../../shared/controls/radio-control/radio-control';
 
@@ -22,16 +23,16 @@ import { RadioControl } from '../../shared/controls/radio-control/radio-control'
     },
   ],
 })
-export class FirstMethod implements ControlValueAccessor {
+export class FirstMethod implements ControlValueAccessor, OnInit {
   @Input() activateCallback!: (step: number) => void;
-
+  innerControl = new FormControl<string | null>(null);
   value: string = '';
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
   writeValue(val: string): void {
-    this.value = val;
+    this.innerControl.setValue(val, { emitEvent: false });
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -40,14 +41,10 @@ export class FirstMethod implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  setValue(val: string) {
-    this.value = val;
-    this.onChange(this.value);
-    this.onTouched();
-
-    if (val === 'social' && this.activateCallback) {
-      this.activateCallback(4);
-      console.log('Social selected — emitting event');
-    }
+  ngOnInit(): void {
+    this.innerControl.valueChanges.subscribe((val) => {
+      this.onChange(val);
+      this.onTouched();
+    });
   }
 }

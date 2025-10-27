@@ -1,11 +1,11 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-radio-control',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './radio-control.html',
   styleUrl: './radio-control.less',
   providers: [
@@ -18,12 +18,13 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class RadioControl extends BaseControl<any> {
   @Input() label!: string;
+  @Input() control!: FormControl;
+  @Input() declare value: string;
 
-  checked: boolean = false;
-
-  onSelect() {
-    this.checked = !this.checked;
-    this.onChange(this.checked);
-    this.onTouched();
-  }
+  // ngOnInit() {
+  //   this.innerControl.valueChanges.subscribe((value) => {
+  //     this.onChange(value);
+  //     this.onTouched();
+  //   });
+  // }
 }

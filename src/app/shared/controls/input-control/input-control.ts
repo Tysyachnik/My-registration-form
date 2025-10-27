@@ -1,11 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  FormControl,
+  FormControlName,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-input-control',
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   standalone: true,
   templateUrl: './input-control.html',
   styleUrl: './input-control.less',
@@ -17,13 +23,13 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
     },
   ],
 })
-export class InputControl extends BaseControl<any> {
+export class InputControl extends BaseControl<any> implements OnInit {
   @Input() label = '';
   @Input() type = 'text';
+  @Input() control!: FormControl;
+  // innerControl = new FormControl('');
 
-  handleInput(event: Event) {
-    const val = (event.target as HTMLInputElement).value;
-    this.value = val;
-    this.onChange(val);
+  ngOnInit() {
+    this.control.valueChanges.subscribe((value) => this.onChange(value));
   }
 }

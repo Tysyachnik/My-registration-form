@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
   NG_VALUE_ACCESSOR,
   ControlValueAccessor,
   FormsModule,
+  FormBuilder,
+  FormControl,
 } from '@angular/forms';
-import { RadioControl } from '../../shared/controls/radio-control/radio-control';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxControl } from '../../shared/controls/checkbox-control/checkbox-control';
 
 @Component({
   selector: 'app-fourth-confirm',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RadioControl, FormsModule, ButtonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, ButtonModule, CheckboxControl],
   templateUrl: './fourth-confirm.html',
   styleUrl: './fourth-confirm.less',
   providers: [
@@ -25,28 +27,23 @@ import { ButtonModule } from 'primeng/button';
   ],
 })
 export class FourthConfirm implements ControlValueAccessor {
-  @Input() group!: FormGroup;
-  @Output() submitForm = new EventEmitter<void>();
-
-  value = {
-    terms: false,
-    data: false,
-    newsletter: false,
-  };
+  @Input() control!: FormGroup;
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
-  get isFormValid() {
-    return this.value.terms && this.value.data;
+  get terms() {
+    return this.control.get('terms') as FormControl;
+  }
+  get data() {
+    return this.control.get('data') as FormControl;
+  }
+  get newsletter() {
+    return this.control.get('newsletter') as FormControl;
   }
 
   writeValue(val: any): void {
-    if (val && typeof val === 'object') {
-      this.value = { ...this.value, ...val };
-    } else {
-      this.value = { terms: false, data: false, newsletter: false };
-    }
+    if (val) this.control.patchValue(val, { emitEvent: false });
   }
 
   registerOnChange(fn: any): void {
@@ -55,18 +52,5 @@ export class FourthConfirm implements ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  onSelect(field: 'terms' | 'data' | 'newsletter', checked: boolean) {
-    this.value[field] = checked;
-    this.onChange({ ...this.value });
-    this.onTouched();
-  }
-
-  submit() {
-    this.onTouched();
-    if (this.isFormValid) {
-      console.log('Registration is completed:', this.value);
-    }
   }
 }

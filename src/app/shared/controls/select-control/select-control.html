@@ -2,7 +2,7 @@
   <p-auto-complete
     [(ngModel)]="value"
     [dropdown]="true"
-    (ngModelChange)="onModelChange($event)"
+    [formControl]="innerControl"
     [suggestions]="filteredOptions"
     (completeMethod)="search($event)"
     forceSelection="true"

@@ -1,8 +1,8 @@
-<form [formGroup]="group" class="flex flex-col gap-4">
-  <app-input-control formControlName="email" label="Email" type="email"></app-input-control>
-  <app-input-control formControlName="name" label="Name"></app-input-control>
+<div [formGroup]="innerControl" class="flex flex-col gap-4">
+  <app-input-control [formControl]="emailControl" label="Email" type="email"></app-input-control>
+  <app-input-control [formControl]="nameControl" label="Name"></app-input-control>
   <app-select-control
-    formControlName="country"
+    [formControl]="countryControl"
     [options]="countries"
     placeholder="Choose the Country"
     optionLabel="label"
@@ -10,7 +10,9 @@
   ></app-select-control>
 
   @if(isPhoneVisible) {
-  <!-- <app-phone-control formControlName="phone" [mask]="selectedCountryCode()"></app-phone-control> -->
-  <app-phone-control formControlName="phone"></app-phone-control>
+  <app-phone-control
+    [formControl]="phoneControl"
+    [countryCode]="selectedCountryCode"
+  ></app-phone-control>
   }
-</form>
+</div>

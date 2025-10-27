@@ -5,7 +5,13 @@ import { ThirdExtra } from '../steps/third-extra/third-extra';
 import { SecondBasic } from '../steps/second-basic/second-basic';
 import { FirstMethod } from '../steps/first-method/first-method';
 import { ButtonModule } from 'primeng/button';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -36,12 +42,7 @@ export class Registration implements OnInit {
       method: fb.group({
         type: [null, Validators.required],
       }),
-      basic: fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        name: ['', [Validators.required, Validators.minLength(2)]],
-        country: [''],
-        phone: [''],
-      }),
+      basic: new FormControl(null, Validators.required),
       extra: fb.group({
         adress: [''],
         birthday: [''],
@@ -78,6 +79,9 @@ export class Registration implements OnInit {
         this.activeStep.set(4);
       }
     });
+    if (this.activeStep() === 1) {
+      this.form.reset();
+    }
   }
 
   get methodGroup(): FormGroup {
@@ -98,7 +102,7 @@ export class Registration implements OnInit {
   }
 
   onSubmit() {
-    if (this.form?.valid) {
+    if (this.confirmGroup.valid) {
       console.log('Registration complete');
     } else {
       console.warn('Form invalid');

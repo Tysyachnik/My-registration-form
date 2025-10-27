@@ -1,20 +1,16 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  effect,
-  EnvironmentInjector,
-  forwardRef,
-  inject,
-  Input,
-  OnInit,
-  runInInjectionContext,
-  signal,
-} from '@angular/core';
+import { Component, effect, forwardRef, Input, OnInit, signal } from '@angular/core';
 import { InputControl } from '../../shared/controls/input-control/input-control';
 import { SelectControl } from '../../shared/controls/select-control/select-control';
 import { PhoneControl } from '../../shared/controls/phone-control/phone-control';
-import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-second-basic',
@@ -22,13 +18,21 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [CommonModule, ReactiveFormsModule, InputControl, SelectControl, PhoneControl],
   templateUrl: './second-basic.html',
   styleUrl: './second-basic.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SecondBasic),
+      multi: true,
+    },
+  ],
 })
-export class SecondBasic implements OnInit {
-  @Input({ required: true }) group!: FormGroup;
-
-  isPhoneVisible: boolean = false;
-
-  selectedCountryCode = signal<string>('');
+export class SecondBasic implements OnInit, ControlValueAccessor {
+  innerControl = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    country: new FormControl(''),
+    phone: new FormControl(''),
+  });
 
   countries = [
     { label: 'Russia', code: 'RU' },
@@ -36,32 +40,55 @@ export class SecondBasic implements OnInit {
     { label: 'Germany', code: 'DE' },
   ];
 
-  private context = inject(EnvironmentInjector);
+  isPhoneVisible = false;
+  selectedCountryCode = '';
+
+  private onChange: any = () => {};
+  private onTouched: any = () => {};
+
+  get emailControl(): FormControl {
+    return this.innerControl.get('email') as FormControl;
+  }
+  get nameControl(): FormControl {
+    return this.innerControl.get('name') as FormControl;
+  }
+  get countryControl(): FormControl {
+    return this.innerControl.get('country') as FormControl;
+  }
+  get phoneControl(): FormControl {
+    return this.innerControl.get('phone') as FormControl;
+  }
 
   ngOnInit(): void {
-    runInInjectionContext(this.context, () => {
-      const countryControl = this.group.get('country') as FormControl;
-      const phoneControl = this.group.get('phone') as FormControl;
+    const countryControl = this.innerControl.get('country') as FormControl;
+    const phoneControl = this.innerControl.get('phone') as FormControl;
 
-      const countrySignal = toSignal(countryControl.valueChanges, {
-        initialValue: countryControl.value,
-      });
+    countryControl.valueChanges.subscribe((selected: string | null) => {
+      if (!selected) {
+        this.isPhoneVisible = false;
+        this.selectedCountryCode = '';
+        return;
+      }
 
-      effect(() => {
-        const selectedCountry = countrySignal();
-        console.log('[effect] selectedCountry =', selectedCountry);
-        if (!selectedCountry) {
-          this.isPhoneVisible = false;
-          phoneControl.reset();
-          return;
-        }
-        this.isPhoneVisible = true;
-        const code = selectedCountry?.code ?? selectedCountry ?? '';
-        console.log('[effect] code set to:', code);
-        this.selectedCountryCode.set(code);
-        phoneControl?.setValue(code, { emitEvent: true });
-        console.log('[effect] selectedCountryCode signal now =', this.selectedCountryCode());
-      });
+      this.selectedCountryCode = selected;
+      this.isPhoneVisible = true;
     });
+
+    this.innerControl.valueChanges.subscribe((val) => {
+      this.onChange(val);
+      this.onTouched();
+    });
+  }
+
+  writeValue(val: any): void {
+    if (val) this.innerControl.patchValue(val, { emitEvent: false });
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
   }
 }

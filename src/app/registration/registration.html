@@ -26,7 +26,9 @@
     </p-step-panel>
     <p-step-panel [value]="2">
       <ng-template #content let-activateCallback="activateCallback">
-        <app-second-basic [group]="basicGroup"></app-second-basic>
+        <div [formGroup]="form">
+          <app-second-basic formControlName="basic"></app-second-basic>
+        </div>
         <div class="flex justify-end pt-6">
           <p-button label="back" (onClick)="activateCallback(1)"></p-button>
           <p-button
@@ -53,11 +55,17 @@
     <p-step-panel [value]="4">
       <ng-template #content>
         <form [formGroup]="confirmGroup">
-          <app-fourth-confirm [group]="confirmGroup"></app-fourth-confirm>
+          <app-fourth-confirm [control]="confirmGroup"></app-fourth-confirm>
           <div class="flex justify-end pt-6">
             <p-button label="back" (onClick)="goTo(3)"></p-button>
           </div>
         </form>
+        <p-button
+          label="Finish registration"
+          [disabled]="!confirmGroup.valid"
+          (onClick)="onSubmit()"
+          class="mt-4"
+        ></p-button>
       </ng-template>
     </p-step-panel>
   </p-step-panels>
