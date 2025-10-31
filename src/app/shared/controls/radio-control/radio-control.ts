@@ -8,13 +8,6 @@ import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/fo
   imports: [ReactiveFormsModule],
   templateUrl: './radio-control.html',
   styleUrl: './radio-control.less',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => RadioControl),
-      multi: true,
-    },
-  ],
 })
 export class RadioControl extends BaseControl<any> {
   @Input() label!: string;

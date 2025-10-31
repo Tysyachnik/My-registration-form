@@ -28,10 +28,10 @@ import {
 })
 export class SecondBasic implements OnInit, ControlValueAccessor {
   innerControl = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    country: new FormControl(''),
-    phone: new FormControl(''),
+    name: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    country: new FormControl<string>(''),
+    phone: new FormControl<string>(''),
   });
 
   countries = [
@@ -45,19 +45,6 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
-
-  get emailControl(): FormControl {
-    return this.innerControl.get('email') as FormControl;
-  }
-  get nameControl(): FormControl {
-    return this.innerControl.get('name') as FormControl;
-  }
-  get countryControl(): FormControl {
-    return this.innerControl.get('country') as FormControl;
-  }
-  get phoneControl(): FormControl {
-    return this.innerControl.get('phone') as FormControl;
-  }
 
   ngOnInit(): void {
     const countryControl = this.innerControl.get('country') as FormControl;
@@ -75,9 +62,12 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
     });
 
     this.innerControl.valueChanges.subscribe((val) => {
+      console.log('SecondBasic emits value:', val);
       this.onChange(val);
       this.onTouched();
     });
+    console.log('11111111', this.innerControl);
+    console.log('22222222', this.innerControl.get('email'));
   }
 
   writeValue(val: any): void {

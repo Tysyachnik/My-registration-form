@@ -10,13 +10,6 @@ import { BaseControl } from '../base-control/base-control';
   imports: [AutoComplete, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './select-control.html',
   styleUrl: './select-control.less',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectControl),
-      multi: true,
-    },
-  ],
 })
 export class SelectControl extends BaseControl<any> implements OnInit {
   @Input() label = 'Chose';

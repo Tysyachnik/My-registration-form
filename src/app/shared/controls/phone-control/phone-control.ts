@@ -1,13 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  forwardRef,
-  input,
-  Input,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, effect, forwardRef, input, OnInit, signal } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -19,14 +10,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   standalone: true,
   templateUrl: './phone-control.html',
   styleUrl: './phone-control.less',
-  providers: [
-    provideNgxMask(),
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PhoneControl),
-      multi: true,
-    },
-  ],
+  providers: [provideNgxMask()],
 })
 export class PhoneControl extends BaseControl<string> implements OnInit {
   innerControl = new FormControl('');

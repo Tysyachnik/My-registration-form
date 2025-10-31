@@ -1,13 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
-import {
-  FormControl,
-  FormControlName,
-  FormsModule,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-input-control',
@@ -26,10 +20,9 @@ import {
 export class InputControl extends BaseControl<any> implements OnInit {
   @Input() label = '';
   @Input() type = 'text';
-  @Input() control!: FormControl;
-  // innerControl = new FormControl('');
+  innerControl = new FormControl('');
 
   ngOnInit() {
-    this.control.valueChanges.subscribe((value) => this.onChange(value));
+    this.innerControl.valueChanges.subscribe((value) => this.onChange(value));
   }
 }

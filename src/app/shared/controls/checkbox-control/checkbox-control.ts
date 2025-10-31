@@ -8,13 +8,6 @@ import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/fo
   imports: [ReactiveFormsModule],
   templateUrl: './checkbox-control.html',
   styleUrl: './checkbox-control.less',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CheckboxControl),
-      multi: true,
-    },
-  ],
 })
 export class CheckboxControl extends BaseControl<any> {
   @Input() label!: string;

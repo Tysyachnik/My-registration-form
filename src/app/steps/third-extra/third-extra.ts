@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, signal, effect, Signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+  ControlValueAccessor,
+} from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SelectControl } from '../../shared/controls/select-control/select-control';
 import { DataPicker } from '../../shared/controls/data-picker/data-picker';
@@ -13,14 +20,23 @@ import { InputControl } from '../../shared/controls/input-control/input-control'
   templateUrl: './third-extra.html',
   styleUrl: './third-extra.less',
 })
-export class ThirdExtra implements OnInit {
-  @Input({ required: true }) group!: FormGroup;
+export class ThirdExtra implements ControlValueAccessor, OnInit {
+  innerControl = new FormGroup({
+    adress: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+    gender: new FormControl<string>('', [Validators.required, Validators.email]),
+    birthday: new FormControl<string>('', { nonNullable: true }),
+    parentName: new FormControl<string>(''),
+    parentEmail: new FormControl<string>(''),
+  });
 
   genders = [
     { label: 'Male', value: 'male' },
     { label: 'Female', value: 'female' },
     { label: 'Other', value: 'other' },
   ];
+
+  private onChange: any = () => {};
+  private onTouched: any = () => {};
 
   birthday!: Signal<string>;
 
@@ -29,8 +45,8 @@ export class ThirdExtra implements OnInit {
   constructor(private fb: FormBuilder) {
     effect(() => {
       const isUserMinor = this.isMinor();
-      const parentNameControl = this.group.get('parentName');
-      const parentEmailControl = this.group.get('parentEmail');
+      const parentNameControl = this.innerControl.get('parentName');
+      const parentEmailControl = this.innerControl.get('parentEmail');
 
       if (isUserMinor) {
         parentNameControl?.setValidators([
@@ -58,16 +74,34 @@ export class ThirdExtra implements OnInit {
       }
     });
   }
+  writeValue(val: any): void {
+    if (val) this.innerControl.patchValue(val, { emitEvent: false });
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
 
   ngOnInit(): void {
-    this.birthday = toSignal(this.group.get('birthday')!.valueChanges);
+    this.birthday = toSignal(this.innerControl.controls.birthday.valueChanges, {
+      initialValue: '',
+    });
 
-    if (!this.group.contains('parentName')) {
-      this.group.addControl('parentName', this.fb.control(''));
+    if (!this.innerControl.contains('parentName')) {
+      this.innerControl.addControl('parentName', this.fb.control(''));
     }
-    if (!this.group.contains('patentEmail')) {
-      this.group.addControl('parentEmail', this.fb.control(''));
+    if (!this.innerControl.contains('patentEmail')) {
+      this.innerControl.addControl('parentEmail', this.fb.control(''));
     }
+
+    this.innerControl.valueChanges.subscribe((value) => {
+      this.onChange(value);
+      this.onTouched();
+    });
   }
 
   private getAge(birthDate: Date): number {

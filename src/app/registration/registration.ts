@@ -40,18 +40,14 @@ export class Registration implements OnInit {
   constructor(private fb: FormBuilder) {
     this.form = fb.group({
       method: fb.group({
-        type: [null, Validators.required],
+        type: fb.control<string | null>(null, { validators: [Validators.required] }),
       }),
-      basic: new FormControl(null, Validators.required),
-      extra: fb.group({
-        adress: [''],
-        birthday: [''],
-        gender: [''],
-      }),
+      basic: fb.control(null, Validators.required),
+      extra: fb.control(null, Validators.required),
       confirm: fb.group({
-        terms: [false, Validators.requiredTrue],
-        data: [false, Validators.requiredTrue],
-        newsletter: [false],
+        terms: fb.control<boolean>(false, { validators: [Validators.required] }),
+        data: fb.control<boolean>(false, { validators: [Validators.required] }),
+        newsletter: fb.control<boolean>(false),
       }),
     });
 
