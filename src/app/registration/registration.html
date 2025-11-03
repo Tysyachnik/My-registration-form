@@ -1,0 +1,74 @@
+<p-stepper [value]="activeStep()" class="max-w-4xl mx-auto">
+  <p-step-list>
+    <p-step [value]="1">Method</p-step>
+    <p-step [value]="2">Basic</p-step>
+    <p-step [value]="3">Additional</p-step>
+    <p-step [value]="4">Confirm</p-step>
+  </p-step-list>
+
+  <p-step-panels>
+    <p-step-panel [value]="1">
+      <ng-template #content let-activateCallback="activateCallback">
+        <form [formGroup]="methodGroup">
+          <app-first-method
+            formControlName="type"
+            (socialSelected)="activateCallback(4)"
+          ></app-first-method>
+          <div class="flex justify-end pt-6">
+            <p-button
+              label="next"
+              (onClick)="activateCallback(2)"
+              [disabled]="!methodGroup.valid"
+            ></p-button>
+          </div>
+        </form>
+      </ng-template>
+    </p-step-panel>
+    <p-step-panel [value]="2">
+      <ng-template #content let-activateCallback="activateCallback">
+        <div [formGroup]="form">
+          <app-second-basic formControlName="basic"></app-second-basic>
+        </div>
+        <div class="flex justify-end pt-6">
+          <p-button label="back" (onClick)="activateCallback(1)"></p-button>
+          <p-button
+            label="next"
+            (onClick)="activateCallback(3)"
+            [disabled]="!basicGroup.valid"
+          ></p-button>
+        </div>
+      </ng-template>
+    </p-step-panel>
+    <p-step-panel [value]="3">
+      <ng-template #content let-activateCallback="activateCallback">
+        <div [formGroup]="form">
+          <app-third-extra formControlName="extra"></app-third-extra>
+        </div>
+        <div class="flex justify-end pt-6">
+          <p-button label="back" (onClick)="activateCallback(2)"></p-button>
+          <p-button
+            label="next"
+            (onClick)="activateCallback(4)"
+            [disabled]="!extraGroup.valid"
+          ></p-button>
+        </div>
+      </ng-template>
+    </p-step-panel>
+    <p-step-panel [value]="4">
+      <ng-template #content>
+        <form [formGroup]="confirmGroup">
+          <app-fourth-confirm [control]="confirmGroup"></app-fourth-confirm>
+          <div class="flex justify-end pt-6">
+            <p-button label="back" (onClick)="goTo(3)"></p-button>
+          </div>
+        </form>
+        <p-button
+          label="Finish registration"
+          [disabled]="!confirmGroup.valid"
+          (onClick)="onSubmit()"
+          class="mt-4"
+        ></p-button>
+      </ng-template>
+    </p-step-panel>
+  </p-step-panels>
+</p-stepper>

@@ -1,0 +1,27 @@
+<div [formGroup]="innerControl" class="flex flex-col gap-4">
+  <app-input-control formControlName="adress" label="Adress"></app-input-control>
+  <app-select-control
+    formControlName="gender"
+    [options]="genders"
+    placeholder="Choose a gender"
+    optionLabel="label"
+    optionValue="value"
+  ></app-select-control>
+  <app-data-picker formControlName="birthday" label="BirthDate"></app-data-picker>
+
+  @if (isMinor()) {
+  <ng-container>
+    <div class="border-t border-gray-300 pt-4 mt-2">
+      <h3 class="font-semibold text-sn mb-2">Legal Representative Data</h3>
+      <app-input-control
+        formControlName="parentName"
+        label="Name of Representative"
+      ></app-input-control>
+      <app-input-control
+        formControlName="parentEmail"
+        label="Email of Representative"
+      ></app-input-control>
+    </div>
+  </ng-container>
+  }
+</div>

@@ -1,0 +1,11 @@
+<label class="w-full flex flex-col gap-1">
+  <input
+    type="tel"
+    class="p-inputtext p-component w-full"
+    placeholder="Enter phone number"
+    [mask]="maskSignal()"
+    [formControl]="innerControl"
+    (blur)="onTouched()"
+  />
+  <small class="text-gray-500">Format: {{ maskSignal() }}</small>
+</label>

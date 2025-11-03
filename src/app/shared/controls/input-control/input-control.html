@@ -1,0 +1,11 @@
+<label class="flex flex-col gap-1 w-full">
+  <span class="text-sm font-medium">{{ label }}</span>
+  <input
+    [type]="type"
+    pInputText
+    class="border rounded p-2 w-full"
+    [disabled]="disabled"
+    [formControl]="innerControl"
+    (blur)="onTouched()"
+  />
+</label>
