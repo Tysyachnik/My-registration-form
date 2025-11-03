@@ -10,6 +10,13 @@ import { BaseControl } from '../base-control/base-control';
   standalone: true,
   templateUrl: './data-picker.html',
   styleUrl: './data-picker.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DataPicker),
+      multi: true,
+    },
+  ],
 })
 export class DataPicker extends BaseControl<Date> {
   @Input() label = 'Date';

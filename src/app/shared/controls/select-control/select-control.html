@@ -2,10 +2,10 @@
   <p-auto-complete
     [(ngModel)]="value"
     [dropdown]="true"
-    [formControl]="innerControl"
     [suggestions]="filteredOptions"
     (completeMethod)="search($event)"
     forceSelection="true"
+    (onSelect)="onSelect($event)"
     (onBlur)="onTouched()"
   />
 

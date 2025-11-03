@@ -10,6 +10,13 @@ import { BaseControl } from '../base-control/base-control';
   imports: [AutoComplete, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './select-control.html',
   styleUrl: './select-control.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SelectControl),
+      multi: true,
+    },
+  ],
 })
 export class SelectControl extends BaseControl<any> implements OnInit {
   @Input() label = 'Chose';
@@ -18,16 +25,9 @@ export class SelectControl extends BaseControl<any> implements OnInit {
   @Input() optionValue: string = 'value';
 
   filteredOptions: any[] = [];
-  innerControl = new FormControl(null);
 
   ngOnInit() {
     this.filteredOptions = [...this.options];
-
-    this.innerControl.valueChanges.subscribe((selected) => {
-      const newValue = selected ? selected[this.optionValue] : null;
-      this.onChange(newValue);
-      this.onTouched();
-    });
   }
 
   search(event: { query: string }) {
@@ -36,5 +36,12 @@ export class SelectControl extends BaseControl<any> implements OnInit {
     this.filteredOptions = this.options.filter((option) => {
       return option[this.optionLabel].toLowerCase().includes(query);
     });
+  }
+
+  onSelect(selected: any) {
+    const newValue = selected ? selected[this.optionValue] : null;
+    this.value = newValue;
+    this.onChange(newValue);
+    this.onTouched();
   }
 }

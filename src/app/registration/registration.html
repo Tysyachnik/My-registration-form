@@ -41,7 +41,9 @@
     </p-step-panel>
     <p-step-panel [value]="3">
       <ng-template #content let-activateCallback="activateCallback">
-        <app-third-extra formControlName="extra"></app-third-extra>
+        <div [formGroup]="form">
+          <app-third-extra formControlName="extra"></app-third-extra>
+        </div>
         <div class="flex justify-end pt-6">
           <p-button label="back" (onClick)="activateCallback(2)"></p-button>
           <p-button

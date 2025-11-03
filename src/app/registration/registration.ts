@@ -42,8 +42,8 @@ export class Registration implements OnInit {
       method: fb.group({
         type: fb.control<string | null>(null, { validators: [Validators.required] }),
       }),
-      basic: fb.control(null, Validators.required),
-      extra: fb.control(null, Validators.required),
+      basic: fb.control<string | null>(null, Validators.required),
+      extra: fb.control<string | null>('', Validators.required),
       confirm: fb.group({
         terms: fb.control<boolean>(false, { validators: [Validators.required] }),
         data: fb.control<boolean>(false, { validators: [Validators.required] }),

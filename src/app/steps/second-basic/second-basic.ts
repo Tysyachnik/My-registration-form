@@ -62,12 +62,9 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
     });
 
     this.innerControl.valueChanges.subscribe((val) => {
-      console.log('SecondBasic emits value:', val);
-      this.onChange(val);
+      this.onChange(this.innerControl.valid ? val : null);
       this.onTouched();
     });
-    console.log('11111111', this.innerControl);
-    console.log('22222222', this.innerControl.get('email'));
   }
 
   writeValue(val: any): void {
