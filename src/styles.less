@@ -1,1 +1,136 @@
-/* You can add global styles to this file, and also import other style files */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+label {
+  font-weight: 500;
+  color: #333;
+}
+
+input,
+select,
+textarea,
+.p-inputtext,
+.p-dropdown,
+.p-autocomplete input {
+  border: 1px solid #cbd5e0;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+.p-inputtext:focus,
+.p-dropdown input:focus,
+.p-autocomplete input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+input[disabled],
+.p-inputtext[disabled],
+.p-dropdown[disabled],
+textarea[disabled] {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+span.text-sm {
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+small {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.p-button {
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.p-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+p-stepper {
+  margin-top: 2rem;
+}
+
+p-step-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+p-step {
+  font-weight: 600;
+  color: #374151;
+}
+
+p-step.active {
+  color: #3b82f6;
+}
+
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.gap-1 {
+  gap: 0.25rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.pt-6 {
+  padding-top: 1.5rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.max-w-4xl {
+  max-width: 64rem;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.p-autocomplete {
+  width: 100%;
+}
+
+.p-dropdown {
+  width: 100%;
+}
+
+.border-t {
+  border-top: 1px solid #d1d5db;
+}
+
+h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.ng-invalid.ng-touched small {
+  color: #ef4444;
+}
