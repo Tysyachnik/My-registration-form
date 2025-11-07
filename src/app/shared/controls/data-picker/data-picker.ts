@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, input, Input } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { BaseControl } from '../base-control/base-control';
@@ -19,13 +19,13 @@ import { BaseControl } from '../base-control/base-control';
   ],
 })
 export class DataPicker extends BaseControl<Date> {
-  @Input() label = 'Date';
-  @Input() inputId = 'date';
-  @Input() showIcon = true;
-  @Input() iconDisplay: 'input' | 'button' = 'input';
-  @Input() dateFormat = 'dd.mm.yy';
-  @Input() minDate?: Date;
-  @Input() maxDate?: Date;
+  label = input<string>();
+  inputId = input<string>();
+  showIcon = input<boolean>();
+  iconDisplay = input<'button' | 'input'>('input');
+  dateFormat = input<string>();
+  minDate = input<Date>();
+  maxDate = input<Date>();
 
   onModelChange(val: Date | null) {
     this.value = val;

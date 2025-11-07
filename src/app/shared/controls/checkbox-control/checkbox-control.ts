@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, input, Input, OnInit } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
@@ -8,8 +8,22 @@ import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/fo
   imports: [ReactiveFormsModule],
   templateUrl: './checkbox-control.html',
   styleUrl: './checkbox-control.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CheckboxControl),
+      multi: true,
+    },
+  ],
 })
-export class CheckboxControl extends BaseControl<any> {
-  @Input() label!: string;
-  @Input() control!: FormControl;
+export class CheckboxControl extends BaseControl<any> implements OnInit {
+  label = input<string>();
+  innerControl = new FormControl('');
+
+  ngOnInit(): void {
+    this.innerControl.valueChanges.subscribe((val) => {
+      this.onChange(val);
+      this.onTouched();
+    });
+  }
 }

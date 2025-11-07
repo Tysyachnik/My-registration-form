@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, effect, forwardRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  effect,
+  forwardRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -27,6 +34,7 @@ import { InputControl } from '../../shared/controls/input-control/input-control'
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThirdExtra implements ControlValueAccessor, OnInit {
   innerControl = new FormGroup({
@@ -53,41 +61,6 @@ export class ThirdExtra implements ControlValueAccessor, OnInit {
   });
 
   constructor() {
-    // effect(() => {
-    //   const isUserMinor = this.isMinor();
-    //   const parentNameControl = this.innerControl.get('parentName');
-    //   const parentEmailControl = this.innerControl.get('parentEmail');
-
-    //   if (isUserMinor) {
-    //     parentNameControl?.setValidators([
-    //       Validators.required,
-    //       Validators.minLength(2),
-    //       Validators.pattern(/^[a-zA-Zа-яА-Я\s]*$/),
-    //     ]);
-    //     parentEmailControl?.setValidators([Validators.required, Validators.email]);
-    //   } else {
-    //     parentEmailControl?.clearValidators();
-    //     parentNameControl?.clearValidators();
-    //     parentEmailControl?.reset();
-    //     parentNameControl?.reset();
-    //   }
-
-    //   parentNameControl?.updateValueAndValidity();
-    //   parentEmailControl?.updateValueAndValidity();
-    //   this.innerControl.updateValueAndValidity();
-    // });
-
-    // effect(() => {
-    //   if (this.birthday) {
-    //     const birthDate = this.birthday();
-    //     if (!birthDate) {
-    //       this.isMinor.set(false);
-    //       return;
-    //     }
-    //     this.isMinor.set(this.getAge(new Date(birthDate)) < 18);
-    //   }
-    // });
-
     effect(() => {
       const birthDate = this.birthday();
       if (!birthDate) {
@@ -142,11 +115,6 @@ export class ThirdExtra implements ControlValueAccessor, OnInit {
     this.innerControl.valueChanges.subscribe((val) => {
       this.onChange(this.innerControl.valid ? val : null);
       this.onTouched();
-    });
-
-    this.innerControl.statusChanges.subscribe(() => {
-      console.log('VALID?', this.innerControl.valid, this.innerControl.value);
-      console.log('isMinor:', this.isMinor());
     });
   }
 

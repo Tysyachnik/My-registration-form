@@ -1,10 +1,13 @@
-<div class="flex flex-col gap-2">
-  <app-checkbox-control label="Accept the terms" [control]="terms"></app-checkbox-control>
+<div [formGroup]="innerControl" class="flex flex-col gap-2">
+  <app-checkbox-control label="Accept the terms" formControlName="terms"></app-checkbox-control>
 
-  <app-checkbox-control label="Agree to data processing" [control]="data"></app-checkbox-control>
+  <app-checkbox-control
+    label="Agree to data processing"
+    formControlName="data"
+  ></app-checkbox-control>
 
   <app-checkbox-control
     label="Subscribe to newsletter"
-    [control]="newsletter"
+    formControlName="newsletter"
   ></app-checkbox-control>
 </div>

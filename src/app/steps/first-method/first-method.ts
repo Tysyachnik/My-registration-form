@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormsModule,
@@ -22,11 +29,11 @@ import { RadioControl } from '../../shared/controls/radio-control/radio-control'
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FirstMethod implements ControlValueAccessor, OnInit {
-  @Input() activateCallback!: (step: number) => void;
   innerControl = new FormControl<string | null>(null);
-  value: string = '';
+  value: string | null = null;
 
   private onChange: any = () => {};
   private onTouched: any = () => {};

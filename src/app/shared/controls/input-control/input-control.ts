@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, input, Input, OnInit } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,8 +19,8 @@ import { InputTextModule } from 'primeng/inputtext';
   ],
 })
 export class InputControl extends BaseControl<any> implements OnInit {
-  @Input() label = '';
-  @Input() type = 'text';
+  label = input<string>();
+  type = input<string>('text');
   innerControl = new FormControl('');
 
   ngOnInit() {

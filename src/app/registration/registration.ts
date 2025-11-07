@@ -1,18 +1,13 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, OnInit, signal } from '@angular/core';
 import { Step, StepPanel, StepperModule } from 'primeng/stepper';
 import { FourthConfirm } from '../steps/fourth-confirm/fourth-confirm';
 import { ThirdExtra } from '../steps/third-extra/third-extra';
 import { SecondBasic } from '../steps/second-basic/second-basic';
 import { FirstMethod } from '../steps/first-method/first-method';
 import { ButtonModule } from 'primeng/button';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RegistrationForm } from '../shared/interfaces/registration-form';
 
 @Component({
   selector: 'app-registration',
@@ -31,74 +26,57 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './registration.html',
   styleUrl: './registration.less',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration implements OnInit {
   activeStep = signal<number>(1);
 
-  form: FormGroup;
+  form: FormGroup<RegistrationForm>;
 
   constructor(private fb: FormBuilder) {
     this.form = fb.group({
-      method: fb.group({
-        type: fb.control<string | null>(null, { validators: [Validators.required] }),
-      }),
+      method: fb.control<string | null>(null, { validators: [Validators.required] }),
       basic: fb.control<string | null>(null, Validators.required),
       extra: fb.control<string | null>('', Validators.required),
-      confirm: fb.group({
-        terms: fb.control<boolean>(false, { validators: [Validators.required] }),
-        data: fb.control<boolean>(false, { validators: [Validators.required] }),
-        newsletter: fb.control<boolean>(false),
-      }),
-    });
+      confirm: fb.control<boolean>(false, Validators.requiredTrue),
+    }) as FormGroup<RegistrationForm>;
 
     const saved = localStorage.getItem('registrationForm');
     if (saved) {
       try {
         this.form.patchValue(JSON.parse(saved));
-        console.log('Form restored from localStorage:', JSON.parse(saved));
-      } catch (error) {
-        console.warn('Failed to parse saved form', error);
-      }
+      } catch (error) {}
     }
 
     this.form.valueChanges.subscribe((value) => {
       localStorage.setItem('registrationForm', JSON.stringify(value));
-      console.log('Form saved to localStorage:', value);
+    });
+
+    effect(() => {
+      const step = this.activeStep();
+      if (step === 1) {
+        this.form.controls.method.setValue(null);
+      }
     });
   }
 
   ngOnInit() {
-    this.methodGroup.get('type')?.valueChanges.subscribe((val) => {
-      console.log('type changed:', val);
+    this.form.controls.method.valueChanges.subscribe((val) => {
       if (val === 'social') {
-        console.log('Activating step 4');
         this.activeStep.set(4);
+
+        this.form.controls.method.setValue(null);
       }
     });
-    if (this.activeStep() === 1) {
-      this.form.reset();
-    }
-  }
-
-  get methodGroup(): FormGroup {
-    return this.form.get('method') as FormGroup;
-  }
-  get basicGroup(): FormGroup {
-    return this.form.get('basic') as FormGroup;
-  }
-  get extraGroup(): FormGroup {
-    return this.form.get('extra') as FormGroup;
-  }
-  get confirmGroup(): FormGroup {
-    return this.form.get('confirm') as FormGroup;
   }
 
   goTo(step: number) {
     this.activeStep.set(step);
+    this.form.controls['method'].get('type')?.setValue(null);
   }
 
   onSubmit() {
-    if (this.confirmGroup.valid) {
+    if (this.form.controls['confirm'].valid) {
       console.log('Registration complete');
     } else {
       console.warn('Form invalid');

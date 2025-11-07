@@ -1,17 +1,17 @@
 <div class="w-full">
   <label class="w-full">
     <p-date-picker
-      [showIcon]="showIcon"
-      [iconDisplay]="iconDisplay"
-      [dateFormat]="dateFormat"
-      [minDate]="minDate"
-      [maxDate]="maxDate"
-      inputId="{{ inputId }}"
+      [showIcon]="showIcon()"
+      [iconDisplay]="iconDisplay()"
+      [dateFormat]="dateFormat()"
+      [minDate]="minDate()"
+      [maxDate]="maxDate()"
+      inputId="{{ inputId() }}"
       [ngModel]="value"
       (ngModelChange)="onModelChange($event)"
       (onBlur)="onTouched()"
       class="w-full"
     />
-    <label for="inputId"> {{ label }}</label>
+    <label for="inputId"> {{ label() }}</label>
   </label>
 </div>

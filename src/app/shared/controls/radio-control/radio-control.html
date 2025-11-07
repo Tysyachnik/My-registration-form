@@ -1,4 +1,4 @@
 <label class="flex items-center gap-2 cursor-pointer">
-  <input type="radio" [formControl]="control" [value]="value" />
-  {{ label }}
+  <input type="radio" value="value" [checked]="value === registationWay" (change)="onSelect()" />
+  {{ label() }}
 </label>

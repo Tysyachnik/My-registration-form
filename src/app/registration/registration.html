@@ -9,19 +9,19 @@
   <p-step-panels>
     <p-step-panel [value]="1">
       <ng-template #content let-activateCallback="activateCallback">
-        <form [formGroup]="methodGroup">
+        <form [formGroup]="form">
           <app-first-method
-            formControlName="type"
+            formControlName="method"
             (socialSelected)="activateCallback(4)"
           ></app-first-method>
-          <div class="flex justify-end pt-6">
-            <p-button
-              label="next"
-              (onClick)="activateCallback(2)"
-              [disabled]="!methodGroup.valid"
-            ></p-button>
-          </div>
         </form>
+        <div class="flex justify-end pt-6">
+          <p-button
+            label="next"
+            (onClick)="activateCallback(2)"
+            [disabled]="!form.controls['method'].valid"
+          ></p-button>
+        </div>
       </ng-template>
     </p-step-panel>
     <p-step-panel [value]="2">
@@ -34,7 +34,7 @@
           <p-button
             label="next"
             (onClick)="activateCallback(3)"
-            [disabled]="!basicGroup.valid"
+            [disabled]="!form.controls['basic'].valid"
           ></p-button>
         </div>
       </ng-template>
@@ -49,22 +49,22 @@
           <p-button
             label="next"
             (onClick)="activateCallback(4)"
-            [disabled]="!extraGroup.valid"
+            [disabled]="!form.controls['extra'].valid"
           ></p-button>
         </div>
       </ng-template>
     </p-step-panel>
     <p-step-panel [value]="4">
       <ng-template #content>
-        <form [formGroup]="confirmGroup">
-          <app-fourth-confirm [control]="confirmGroup"></app-fourth-confirm>
-          <div class="flex justify-end pt-6">
-            <p-button label="back" (onClick)="goTo(3)"></p-button>
-          </div>
-        </form>
+        <div [formGroup]="form">
+          <app-fourth-confirm formControlName="confirm"></app-fourth-confirm>
+        </div>
+        <div class="flex justify-end pt-6">
+          <p-button label="back" (onClick)="goTo(3)"></p-button>
+        </div>
         <p-button
           label="Finish registration"
-          [disabled]="!confirmGroup.valid"
+          [disabled]="!form.controls['confirm'].valid"
           (onClick)="onSubmit()"
           class="mt-4"
         ></p-button>

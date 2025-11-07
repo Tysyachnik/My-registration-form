@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
   NG_VALUE_ACCESSOR,
   ControlValueAccessor,
   FormsModule,
-  FormBuilder,
   FormControl,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -25,25 +24,38 @@ import { CheckboxControl } from '../../shared/controls/checkbox-control/checkbox
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FourthConfirm implements ControlValueAccessor {
-  @Input() control!: FormGroup;
+export class FourthConfirm implements ControlValueAccessor, OnInit {
+  innerControl = new FormGroup({
+    terms: new FormControl<boolean>(false),
+    data: new FormControl<boolean>(false),
+    newsletter: new FormControl<boolean>(false),
+  });
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
-  get terms() {
-    return this.control.get('terms') as FormControl;
+  ngOnInit(): void {
+    this.innerControl.valueChanges.subscribe(() => {
+      this.checkValidity();
+    });
   }
-  get data() {
-    return this.control.get('data') as FormControl;
-  }
-  get newsletter() {
-    return this.control.get('newsletter') as FormControl;
+
+  private checkValidity() {
+    const termsValid = this.innerControl.controls['terms'].value;
+    const dataValid = this.innerControl.controls['data'].value;
+
+    if (termsValid && dataValid) {
+      this.onChange(true);
+      this.onTouched();
+    } else {
+      this.onChange(false);
+    }
   }
 
   writeValue(val: any): void {
-    if (val) this.control.patchValue(val, { emitEvent: false });
+    if (val) this.innerControl.patchValue(val, { emitEvent: false });
   }
 
   registerOnChange(fn: any): void {

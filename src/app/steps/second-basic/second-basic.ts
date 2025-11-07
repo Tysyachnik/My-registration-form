@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, forwardRef, Input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  forwardRef,
+  Input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { InputControl } from '../../shared/controls/input-control/input-control';
 import { SelectControl } from '../../shared/controls/select-control/select-control';
 import { PhoneControl } from '../../shared/controls/phone-control/phone-control';
@@ -25,6 +33,7 @@ import {
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondBasic implements OnInit, ControlValueAccessor {
   innerControl = new FormGroup({
