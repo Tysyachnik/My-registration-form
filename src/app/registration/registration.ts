@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegistrationForm } from '../shared/interfaces/registration-form';
+import { RegistrationStep } from '../shared/enums/registration-step';
 
 @Component({
   selector: 'app-registration',
@@ -29,16 +30,25 @@ import { RegistrationForm } from '../shared/interfaces/registration-form';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration implements OnInit {
-  activeStep = signal<number>(1);
-
-  form: FormGroup<RegistrationForm>;
+  activeStep = signal(RegistrationStep.Method);
+  RegistrationStep = RegistrationStep;
+  form!: FormGroup<RegistrationForm>;
 
   constructor(private fb: FormBuilder) {
-    this.form = fb.group({
-      method: fb.control<string | null>(null, { validators: [Validators.required] }),
-      basic: fb.control<string | null>(null, Validators.required),
-      extra: fb.control<string | null>('', Validators.required),
-      confirm: fb.control<boolean>(false, Validators.requiredTrue),
+    effect(() => {
+      const step = this.activeStep();
+      if (step === 1) {
+        this.form.controls.method.setValue(null);
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.form = this.fb.group({
+      method: this.fb.control<string | null>(null, { validators: [Validators.required] }),
+      basic: this.fb.control<string | null>(null, Validators.required),
+      extra: this.fb.control<string | null>('', Validators.required),
+      confirm: this.fb.control<boolean>(false, Validators.requiredTrue),
     }) as FormGroup<RegistrationForm>;
 
     const saved = localStorage.getItem('registrationForm');
@@ -52,18 +62,9 @@ export class Registration implements OnInit {
       localStorage.setItem('registrationForm', JSON.stringify(value));
     });
 
-    effect(() => {
-      const step = this.activeStep();
-      if (step === 1) {
-        this.form.controls.method.setValue(null);
-      }
-    });
-  }
-
-  ngOnInit() {
     this.form.controls.method.valueChanges.subscribe((val) => {
       if (val === 'social') {
-        this.activeStep.set(4);
+        this.activeStep.set(RegistrationStep.Confirm);
 
         this.form.controls.method.setValue(null);
       }

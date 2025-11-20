@@ -4,8 +4,12 @@
     class="p-inputtext p-component w-full"
     placeholder="Enter phone number"
     [mask]="maskSignal()"
+    [prefix]="prefix()"
     [formControl]="innerControl"
     (blur)="onTouched()"
+    [dropSpecialCharacters]="false"
+    [showMaskTyped]="true"
+    [clearIfNotMatch]="false"
   />
   <small class="text-gray-500">Format: {{ maskSignal() }}</small>
 </label>

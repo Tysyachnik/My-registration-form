@@ -23,8 +23,11 @@ export class SelectControl extends BaseControl<any> implements OnInit {
   optionLabel = input<string>('name');
   optionValue = input<string>('value');
   options = input<any[]>([]);
+  appendTo = input<string>('body');
+  required = input<boolean>(false);
 
   filteredOptions: any[] = [];
+  touched: boolean = false;
 
   ngOnInit() {
     this.filteredOptions = [...this.options()];
@@ -39,9 +42,13 @@ export class SelectControl extends BaseControl<any> implements OnInit {
   }
 
   onSelect(selected: any) {
-    const newValue = selected ? selected[this.optionValue()] : null;
-    this.value = newValue;
-    this.onChange(newValue);
+    this.value = selected[this.optionValue()];
+    this.onChange(this.value);
+    this.onTouched();
+  }
+
+  onBlur() {
+    this.touched = true;
     this.onTouched();
   }
 }

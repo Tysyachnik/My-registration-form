@@ -10,13 +10,21 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   standalone: true,
   templateUrl: './phone-control.html',
   styleUrl: './phone-control.less',
-  providers: [provideNgxMask()],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PhoneControl),
+      multi: true,
+    },
+    provideNgxMask(),
+  ],
 })
 export class PhoneControl extends BaseControl<string> implements OnInit {
   innerControl = new FormControl('');
   countryCode = input<string>('');
+  prefix = signal<string>('');
 
-  maskSignal = signal<string>('');
+  maskSignal = signal<string>('+0 (000) 000-00-000');
 
   constructor() {
     super();
@@ -24,13 +32,16 @@ export class PhoneControl extends BaseControl<string> implements OnInit {
     effect(() => {
       switch (this.countryCode()) {
         case 'RU':
-          this.maskSignal.set('+7 (000) 000-00-000');
+          this.maskSignal.set(' (000) 000-00-000');
+          this.prefix.set('+7');
           break;
         case 'US':
-          this.maskSignal.set('+1 (000) 000-0000');
+          this.maskSignal.set(' (000) 000-0000');
+          this.prefix.set('+1');
           break;
         case 'DE':
-          this.maskSignal.set('+49 000 000000');
+          this.maskSignal.set(' 000 000000');
+          this.prefix.set('+49');
           break;
         default:
           this.maskSignal.set('+0 (000) 000-00-000');
@@ -38,18 +49,20 @@ export class PhoneControl extends BaseControl<string> implements OnInit {
     });
   }
 
-  override writeValue(val: string | null): void {
-    this.value = val;
-    this.innerControl.setValue(val, { emitEvent: false });
-  }
-
-  override registerOnChange(fn: any): void {
-    this.innerControl.valueChanges.subscribe(fn);
-  }
   ngOnInit() {
     this.innerControl.valueChanges.subscribe((value) => {
       this.value = value;
       this.onChange(value);
     });
   }
+
+  // override writeValue(val: string | null): void {
+  //   console.log('val', val);
+  //   this.value = val;
+  //   this.innerControl.setValue(val, { emitEvent: false });
+  // }
+
+  // override registerOnChange(fn: any): void {
+  //   this.innerControl.valueChanges.subscribe(fn);
+  // }
 }

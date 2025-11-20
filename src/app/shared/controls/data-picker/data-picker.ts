@@ -26,6 +26,7 @@ export class DataPicker extends BaseControl<Date> {
   dateFormat = input<string>();
   minDate = input<Date>();
   maxDate = input<Date>();
+  appendTo = input<string>('body');
 
   onModelChange(val: Date | null) {
     this.value = val;

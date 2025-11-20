@@ -49,7 +49,7 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
     { label: 'Germany', code: 'DE' },
   ];
 
-  isPhoneVisible = false;
+  isPhoneVisible = signal<boolean>(false);
   selectedCountryCode = '';
 
   private onChange: any = () => {};
@@ -57,17 +57,16 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
 
   ngOnInit(): void {
     const countryControl = this.innerControl.get('country') as FormControl;
-    const phoneControl = this.innerControl.get('phone') as FormControl;
 
-    countryControl.valueChanges.subscribe((selected: string | null) => {
+    countryControl.valueChanges.subscribe((selected: { label: string; code: string }) => {
       if (!selected) {
-        this.isPhoneVisible = false;
+        this.isPhoneVisible.set(false);
         this.selectedCountryCode = '';
         return;
       }
 
-      this.selectedCountryCode = selected;
-      this.isPhoneVisible = true;
+      this.selectedCountryCode = selected.code;
+      this.isPhoneVisible.set(true);
     });
 
     this.innerControl.valueChanges.subscribe((val) => {

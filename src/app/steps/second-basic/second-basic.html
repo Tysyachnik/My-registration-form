@@ -1,15 +1,21 @@
 <div [formGroup]="innerControl" class="flex flex-col gap-4">
-  <app-input-control formControlName="email" label="Email" type="email"></app-input-control>
-  <app-input-control formControlName="name" label="Name"></app-input-control>
+  <app-input-control
+    formControlName="email"
+    label="Email"
+    type="email"
+    [required]="true"
+  ></app-input-control>
+
+  <app-input-control formControlName="name" label="Name" [required]="true"></app-input-control>
   <app-select-control
     formControlName="country"
     [options]="countries"
     placeholder="Choose the Country"
     optionLabel="label"
-    optionValue="code"
+    optionValue="value"
   ></app-select-control>
 
-  @if(isPhoneVisible) {
+  @if(isPhoneVisible()) {
   <app-phone-control
     formControlName="phone"
     [countryCode]="selectedCountryCode"

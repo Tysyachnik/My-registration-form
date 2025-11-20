@@ -6,12 +6,24 @@ form {
   margin: 0 auto;
 }
 
+form,
+.step-content,
+.flex {
+  overflow: visible;
+}
+
 label {
   font-weight: 500;
   color: #333;
 }
 
-input,
+input.invalid,
+.invalid .p-inputtext {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px #ef4444;
+}
+
+input:not([type='checkbox']),
 select,
 textarea,
 .p-inputtext,

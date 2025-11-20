@@ -1,24 +1,21 @@
 <p-stepper [value]="activeStep()" class="max-w-4xl mx-auto">
   <p-step-list>
-    <p-step [value]="1">Method</p-step>
-    <p-step [value]="2">Basic</p-step>
-    <p-step [value]="3">Additional</p-step>
-    <p-step [value]="4">Confirm</p-step>
+    <p-step [value]="RegistrationStep.Method">Method</p-step>
+    <p-step [value]="RegistrationStep.Basic">Basic</p-step>
+    <p-step [value]="RegistrationStep.Additional">Additional</p-step>
+    <p-step [value]="RegistrationStep.Confirm">Confirm</p-step>
   </p-step-list>
 
   <p-step-panels>
     <p-step-panel [value]="1">
       <ng-template #content let-activateCallback="activateCallback">
         <form [formGroup]="form">
-          <app-first-method
-            formControlName="method"
-            (socialSelected)="activateCallback(4)"
-          ></app-first-method>
+          <app-first-method formControlName="method"></app-first-method>
         </form>
         <div class="flex justify-end pt-6">
           <p-button
             label="next"
-            (onClick)="activateCallback(2)"
+            (onClick)="activateCallback(RegistrationStep.Basic)"
             [disabled]="!form.controls['method'].valid"
           ></p-button>
         </div>
@@ -30,10 +27,10 @@
           <app-second-basic formControlName="basic"></app-second-basic>
         </div>
         <div class="flex justify-end pt-6">
-          <p-button label="back" (onClick)="activateCallback(1)"></p-button>
+          <p-button label="back" (onClick)="activateCallback(RegistrationStep.Method)"></p-button>
           <p-button
             label="next"
-            (onClick)="activateCallback(3)"
+            (onClick)="activateCallback(RegistrationStep.Additional)"
             [disabled]="!form.controls['basic'].valid"
           ></p-button>
         </div>
@@ -45,10 +42,10 @@
           <app-third-extra formControlName="extra"></app-third-extra>
         </div>
         <div class="flex justify-end pt-6">
-          <p-button label="back" (onClick)="activateCallback(2)"></p-button>
+          <p-button label="back" (onClick)="activateCallback(RegistrationStep.Basic)"></p-button>
           <p-button
             label="next"
-            (onClick)="activateCallback(4)"
+            (onClick)="activateCallback(RegistrationStep.Confirm)"
             [disabled]="!form.controls['extra'].valid"
           ></p-button>
         </div>
@@ -60,7 +57,7 @@
           <app-fourth-confirm formControlName="confirm"></app-fourth-confirm>
         </div>
         <div class="flex justify-end pt-6">
-          <p-button label="back" (onClick)="goTo(3)"></p-button>
+          <p-button label="back" (onClick)="goTo(RegistrationStep.Additional)"></p-button>
         </div>
         <p-button
           label="Finish registration"
