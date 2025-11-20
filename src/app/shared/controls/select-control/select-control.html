@@ -1,0 +1,23 @@
+<label class="w-full">
+  <p-auto-complete
+    class="p-dropdown-panel"
+    [(ngModel)]="value"
+    [placeholder]="'Gender'"
+    [dropdown]="true"
+    [suggestions]="filteredOptions"
+    (completeMethod)="search($event)"
+    forceSelection="true"
+    (onSelect)="onSelect($event)"
+    (onBlur)="onBlur()"
+    [appendTo]="appendTo()"
+    required
+    [class.invalid]="required() && touched && !value"
+  />
+
+  <span class="text-sm text-gray-700">{{ label() }}</span>
+  <span class="text-sm font-medium">
+    @if(required()) {
+    <span class="text-red-500">*</span>
+    }
+  </span>
+</label>

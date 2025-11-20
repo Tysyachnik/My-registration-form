@@ -1,0 +1,19 @@
+<label class="flex flex-col gap-1 w-full">
+  <span class="text-sm font-medium">
+    {{ label() }}
+    @if(required()) {
+    <span class="text-red-500">*</span>
+    }
+  </span>
+
+  <input
+    [type]="type()"
+    pInputText
+    class="border rounded p-2 w-full"
+    [disabled]="disabled"
+    [formControl]="innerControl"
+    (blur)="onTouched()"
+    required
+    [class.invalid]="required() && innerControl.invalid && innerControl.touched"
+  />
+</label>

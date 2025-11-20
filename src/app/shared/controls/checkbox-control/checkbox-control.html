@@ -1,0 +1,14 @@
+<label class="flex items-center gap-2 cursor-pointer">
+  <input
+    type="checkbox"
+    [formControl]="innerControl"
+    required
+    [class.invalid]="required() && innerControl.invalid && innerControl.touched"
+  />
+  {{ label() }}
+  <span class="text-sm font-medium">
+    @if(required()) {
+    <span class="text-red-500">*</span>
+    }
+  </span>
+</label>

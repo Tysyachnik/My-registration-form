@@ -1,0 +1,89 @@
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  forwardRef,
+  Input,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { InputControl } from '../../shared/controls/input-control/input-control';
+import { SelectControl } from '../../shared/controls/select-control/select-control';
+import { PhoneControl } from '../../shared/controls/phone-control/phone-control';
+import {
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-second-basic',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, InputControl, SelectControl, PhoneControl],
+  templateUrl: './second-basic.html',
+  styleUrl: './second-basic.less',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SecondBasic),
+      multi: true,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class SecondBasic implements OnInit, ControlValueAccessor {
+  innerControl = new FormGroup({
+    name: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    country: new FormControl<string>(''),
+    phone: new FormControl<string>(''),
+  });
+
+  countries = [
+    { label: 'Russia', code: 'RU' },
+    { label: 'USA', code: 'US' },
+    { label: 'Germany', code: 'DE' },
+  ];
+
+  isPhoneVisible = signal<boolean>(false);
+  selectedCountryCode = '';
+
+  private onChange: any = () => {};
+  private onTouched: any = () => {};
+
+  ngOnInit(): void {
+    const countryControl = this.innerControl.get('country') as FormControl;
+
+    countryControl.valueChanges.subscribe((selected: { label: string; code: string }) => {
+      if (!selected) {
+        this.isPhoneVisible.set(false);
+        this.selectedCountryCode = '';
+        return;
+      }
+
+      this.selectedCountryCode = selected.code;
+      this.isPhoneVisible.set(true);
+    });
+
+    this.innerControl.valueChanges.subscribe((val) => {
+      this.onChange(this.innerControl.valid ? val : null);
+      this.onTouched();
+    });
+  }
+
+  writeValue(val: any): void {
+    if (val) this.innerControl.patchValue(val, { emitEvent: false });
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+}
