@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  forwardRef,
+  inject,
+  input,
+  OnInit,
+} from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-radio-control',
@@ -17,18 +26,23 @@ import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/fo
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RadioControl extends BaseControl<any> {
-  label = input<string>();
+export class RadioControl extends BaseControl<string> implements OnInit {
   registationWay: string | null = null;
-  override value: any = input<string | null>();
+  private destroyRef = inject(DestroyRef);
 
-  onSelect() {
-    this.registationWay = this.value();
-    this.onChange(this.registationWay);
-    this.onTouched();
+  ngOnInit(): void {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
+      this.registationWay = val;
+      this.onChange(val);
+      this.onTouched();
+    });
   }
 
   override writeValue(val: string | null): void {
     this.registationWay = val;
+    this.innerControl.setValue(val, { emitEvent: false });
+  }
+  onSelect(val: string) {
+    this.innerControl.setValue(val);
   }
 }

@@ -7,9 +7,11 @@ import {
   input,
   Input,
   OnInit,
+  Optional,
+  Self,
 } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
-import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -18,20 +20,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [ReactiveFormsModule],
   templateUrl: './checkbox-control.html',
   styleUrl: './checkbox-control.less',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CheckboxControl),
-      multi: true,
-    },
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxControl extends BaseControl<any> implements OnInit {
-  label = input<string>();
-  innerControl = new FormControl('');
-  required = input<boolean>(false);
   private destroyRef = inject(DestroyRef);
+
+  constructor(@Optional() @Self() public ngControl: NgControl) {
+    super();
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   ngOnInit(): void {
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {

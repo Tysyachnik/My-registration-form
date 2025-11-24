@@ -14,6 +14,7 @@ import {
   ControlValueAccessor,
   FormsModule,
   FormControl,
+  Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxControl } from '../../shared/controls/checkbox-control/checkbox-control';
@@ -36,8 +37,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class FourthConfirm implements ControlValueAccessor, OnInit {
   innerControl = new FormGroup({
-    terms: new FormControl<boolean>(false),
-    data: new FormControl<boolean>(false),
+    terms: new FormControl<boolean>(false, Validators.requiredTrue),
+    data: new FormControl<boolean>(false, Validators.requiredTrue),
     newsletter: new FormControl<boolean>(false),
   });
   private destroyRef = inject(DestroyRef);
