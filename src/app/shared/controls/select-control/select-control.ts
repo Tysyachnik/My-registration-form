@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  input,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { AutoComplete } from 'primeng/autocomplete';
 import { BaseControl } from '../base-control/base-control';
@@ -17,6 +24,7 @@ import { BaseControl } from '../base-control/base-control';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectControl extends BaseControl<any> implements OnInit {
   label = input<string>('Chose');

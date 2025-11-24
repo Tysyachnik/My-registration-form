@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, Input } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { BaseControl } from '../base-control/base-control';
@@ -17,6 +17,7 @@ import { BaseControl } from '../base-control/base-control';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataPicker extends BaseControl<Date> {
   label = input<string>();

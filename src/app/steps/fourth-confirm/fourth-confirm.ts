@@ -51,18 +51,6 @@ export class FourthConfirm implements ControlValueAccessor, OnInit {
     });
   }
 
-  private checkValidity() {
-    const termsValid = this.innerControl.controls['terms'].value;
-    const dataValid = this.innerControl.controls['data'].value;
-
-    if (termsValid && dataValid) {
-      this.onChange(true);
-      this.onTouched();
-    } else {
-      this.onChange(false);
-    }
-  }
-
   writeValue(val: any): void {
     if (val) this.innerControl.patchValue(val, { emitEvent: false });
   }
@@ -73,5 +61,17 @@ export class FourthConfirm implements ControlValueAccessor, OnInit {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  private checkValidity() {
+    const termsValid = this.innerControl.controls['terms'].value;
+    const dataValid = this.innerControl.controls['data'].value;
+
+    if (termsValid && dataValid) {
+      this.onChange(true);
+      this.onTouched();
+    } else {
+      this.onChange(false);
+    }
   }
 }

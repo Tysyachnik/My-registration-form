@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   effect,
@@ -28,6 +29,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     },
     provideNgxMask(),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhoneControl extends BaseControl<string> implements OnInit {
   innerControl = new FormControl('');
