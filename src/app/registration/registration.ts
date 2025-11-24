@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { Step, StepPanel, StepperModule } from 'primeng/stepper';
 import { FourthConfirm } from '../steps/fourth-confirm/fourth-confirm';
 import { ThirdExtra } from '../steps/third-extra/third-extra';
@@ -9,6 +17,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { RegistrationForm } from '../shared/interfaces/registration-form';
 import { RegistrationStep } from '../shared/enums/registration-step';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-registration',
@@ -33,6 +42,7 @@ export class Registration implements OnInit {
   activeStep = signal(RegistrationStep.Method);
   RegistrationStep = RegistrationStep;
   form!: FormGroup<RegistrationForm>;
+  private destroyRef = inject(DestroyRef);
 
   constructor(private fb: FormBuilder) {
     effect(() => {
@@ -58,17 +68,19 @@ export class Registration implements OnInit {
       } catch (error) {}
     }
 
-    this.form.valueChanges.subscribe((value) => {
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       localStorage.setItem('registrationForm', JSON.stringify(value));
     });
 
-    this.form.controls.method.valueChanges.subscribe((val) => {
-      if (val === 'social') {
-        this.activeStep.set(RegistrationStep.Confirm);
+    this.form.controls.method.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((val) => {
+        if (val === 'social') {
+          this.activeStep.set(RegistrationStep.Confirm);
 
-        this.form.controls.method.setValue(null);
-      }
-    });
+          this.form.controls.method.setValue(null);
+        }
+      });
   }
 
   goTo(step: number) {

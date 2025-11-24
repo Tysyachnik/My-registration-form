@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   effect,
   forwardRef,
+  inject,
   Input,
   OnInit,
   signal,
@@ -19,6 +21,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-second-basic',
@@ -51,6 +54,7 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
 
   isPhoneVisible = signal<boolean>(false);
   selectedCountryCode = '';
+  private destroyRef = inject(DestroyRef);
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
@@ -58,18 +62,20 @@ export class SecondBasic implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     const countryControl = this.innerControl.get('country') as FormControl;
 
-    countryControl.valueChanges.subscribe((selected: { label: string; code: string }) => {
-      if (!selected) {
-        this.isPhoneVisible.set(false);
-        this.selectedCountryCode = '';
-        return;
-      }
+    countryControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((selected: { label: string; code: string }) => {
+        if (!selected) {
+          this.isPhoneVisible.set(false);
+          this.selectedCountryCode = '';
+          return;
+        }
 
-      this.selectedCountryCode = selected.code;
-      this.isPhoneVisible.set(true);
-    });
+        this.selectedCountryCode = selected.code;
+        this.isPhoneVisible.set(true);
+      });
 
-    this.innerControl.valueChanges.subscribe((val) => {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.onChange(this.innerControl.valid ? val : null);
       this.onTouched();
     });

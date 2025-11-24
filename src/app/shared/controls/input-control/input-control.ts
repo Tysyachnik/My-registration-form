@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
+  DestroyRef,
   forwardRef,
   inject,
   input,
@@ -19,6 +20,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-input-control',
@@ -39,8 +41,11 @@ export class InputControl extends BaseControl<any> implements OnInit {
   type = input<string>('text');
   innerControl = new FormControl('');
   required = input<boolean>(false);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    this.innerControl.valueChanges.subscribe((value) => this.onChange(value));
+    this.innerControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.onChange(value));
   }
 }
