@@ -42,6 +42,13 @@ export class FirstMethod implements ControlValueAccessor, OnInit {
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
+  ngOnInit(): void {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
+      this.onChange(val);
+      this.onTouched();
+    });
+  }
+
   writeValue(val: string): void {
     this.innerControl.setValue(val, { emitEvent: false });
   }
@@ -50,12 +57,5 @@ export class FirstMethod implements ControlValueAccessor, OnInit {
   }
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  ngOnInit(): void {
-    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
-      this.onChange(val);
-      this.onTouched();
-    });
   }
 }

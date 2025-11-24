@@ -54,23 +54,8 @@ export class Registration implements OnInit {
   }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      method: this.fb.control<string | null>(null, { validators: [Validators.required] }),
-      basic: this.fb.control<string | null>(null, Validators.required),
-      extra: this.fb.control<string | null>('', Validators.required),
-      confirm: this.fb.control<boolean>(false, Validators.requiredTrue),
-    }) as FormGroup<RegistrationForm>;
-
-    const saved = localStorage.getItem('registrationForm');
-    if (saved) {
-      try {
-        this.form.patchValue(JSON.parse(saved));
-      } catch (error) {}
-    }
-
-    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-      localStorage.setItem('registrationForm', JSON.stringify(value));
-    });
+    this.initializeForm();
+    this.setValueFromLocalStorage();
 
     this.form.controls.method.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -94,5 +79,27 @@ export class Registration implements OnInit {
     } else {
       console.warn('Form invalid');
     }
+  }
+
+  private initializeForm() {
+    this.form = this.fb.group({
+      method: this.fb.control<string | null>(null, { validators: [Validators.required] }),
+      basic: this.fb.control<string | null>(null, Validators.required),
+      extra: this.fb.control<string | null>('', Validators.required),
+      confirm: this.fb.control<boolean>(false, Validators.requiredTrue),
+    }) as FormGroup<RegistrationForm>;
+  }
+
+  private setValueFromLocalStorage() {
+    const saved = localStorage.getItem('registrationForm');
+    if (saved) {
+      try {
+        this.form.patchValue(JSON.parse(saved));
+      } catch (error) {}
+    }
+
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
+      localStorage.setItem('registrationForm', JSON.stringify(value));
+    });
   }
 }
