@@ -1,4 +1,4 @@
-import { Component, forwardRef, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, OnInit } from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
@@ -15,6 +15,7 @@ import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/fo
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RadioControl extends BaseControl<any> {
   label = input<string>();

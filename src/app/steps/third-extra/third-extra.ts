@@ -102,6 +102,13 @@ export class ThirdExtra implements ControlValueAccessor, OnInit {
     });
   }
 
+  ngOnInit(): void {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
+      this.onChange(this.innerControl.valid ? val : null);
+      this.onTouched();
+    });
+  }
+
   writeValue(val: any): void {
     if (val) this.innerControl.patchValue(val, { emitEvent: false });
   }
@@ -112,13 +119,6 @@ export class ThirdExtra implements ControlValueAccessor, OnInit {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  ngOnInit(): void {
-    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
-      this.onChange(this.innerControl.valid ? val : null);
-      this.onTouched();
-    });
   }
 
   private getAge(birthDate: Date): number {

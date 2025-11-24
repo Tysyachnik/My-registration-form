@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Registration } from './registration/registration';
 
 @Component({
@@ -7,6 +7,7 @@ import { Registration } from './registration/registration';
   standalone: true,
   templateUrl: './app.html',
   styleUrl: './app.less',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   protected readonly title = signal('my-registration-form');
