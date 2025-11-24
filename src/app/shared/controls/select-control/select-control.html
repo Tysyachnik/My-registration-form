@@ -1,17 +1,17 @@
 <label class="w-full">
   <p-auto-complete
     class="p-dropdown-panel"
-    [(ngModel)]="value"
     [placeholder]="'Gender'"
     [dropdown]="true"
     [suggestions]="filteredOptions"
+    [formControl]="innerControl"
     (completeMethod)="search($event)"
     forceSelection="true"
     (onSelect)="onSelect($event)"
     (onBlur)="onBlur()"
     [appendTo]="appendTo()"
     required
-    [class.invalid]="required() && touched && !value"
+    [class.invalid]="ngControl.control?.invalid && ngControl.control?.touched"
   />
 
   <span class="text-sm text-gray-700">{{ label() }}</span>

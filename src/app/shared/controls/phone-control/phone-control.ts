@@ -32,7 +32,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhoneControl extends BaseControl<string> implements OnInit {
-  innerControl = new FormControl('');
   countryCode = input<string>('');
   prefix = signal<string>('');
   maskSignal = signal<string>('+0 (000) 000-00-000');

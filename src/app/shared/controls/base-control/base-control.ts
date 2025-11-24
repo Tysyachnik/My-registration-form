@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-base-control',
@@ -17,6 +17,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BaseControl<T> implements ControlValueAccessor {
+  label = input<string>('');
+  required = input<boolean>(false);
+  innerControl: FormControl<T | null> = new FormControl<T | null>(null);
   value: T | null = null;
   disabled: boolean = false;
 
