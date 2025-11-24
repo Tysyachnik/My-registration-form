@@ -1,12 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, forwardRef, input, Input } from '@angular/core';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  forwardRef,
+  inject,
+  input,
+  Input,
+  OnInit,
+} from '@angular/core';
+import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { BaseControl } from '../base-control/base-control';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-data-picker',
-  imports: [CommonModule, FormsModule, DatePickerModule],
+  imports: [CommonModule, FormsModule, DatePickerModule, ReactiveFormsModule],
   standalone: true,
   templateUrl: './data-picker.html',
   styleUrl: './data-picker.less',
@@ -19,8 +29,7 @@ import { BaseControl } from '../base-control/base-control';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataPicker extends BaseControl<Date> {
-  label = input<string>();
+export class DataPicker extends BaseControl<Date> implements OnInit {
   inputId = input<string>();
   showIcon = input<boolean>();
   iconDisplay = input<'button' | 'input'>('input');
@@ -28,9 +37,16 @@ export class DataPicker extends BaseControl<Date> {
   minDate = input<Date>();
   maxDate = input<Date>();
   appendTo = input<string>('body');
+  private destroyRef = inject(DestroyRef);
 
-  onModelChange(val: Date | null) {
-    this.value = val;
-    this.onChange(val);
+  ngOnInit(): void {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
+      this.onChange(val);
+      this.onTouched();
+    });
+  }
+
+  override writeValue(val: Date | null): void {
+    this.innerControl.setValue(val, { emitEvent: false });
   }
 }
