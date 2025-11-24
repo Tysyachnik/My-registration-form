@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, forwardRef, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  forwardRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -10,6 +17,7 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxControl } from '../../shared/controls/checkbox-control/checkbox-control';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-fourth-confirm',
@@ -32,12 +40,13 @@ export class FourthConfirm implements ControlValueAccessor, OnInit {
     data: new FormControl<boolean>(false),
     newsletter: new FormControl<boolean>(false),
   });
+  private destroyRef = inject(DestroyRef);
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
   ngOnInit(): void {
-    this.innerControl.valueChanges.subscribe(() => {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.checkValidity();
     });
   }

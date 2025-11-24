@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   forwardRef,
+  inject,
   Input,
   OnInit,
   Output,
@@ -15,6 +17,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import { RadioControl } from '../../shared/controls/radio-control/radio-control';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-first-method',
@@ -34,6 +37,7 @@ import { RadioControl } from '../../shared/controls/radio-control/radio-control'
 export class FirstMethod implements ControlValueAccessor, OnInit {
   innerControl = new FormControl<string | null>(null);
   value: string | null = null;
+  private destroyRef = inject(DestroyRef);
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
@@ -49,7 +53,7 @@ export class FirstMethod implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit(): void {
-    this.innerControl.valueChanges.subscribe((val) => {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.onChange(val);
       this.onTouched();
     });

@@ -6,6 +6,8 @@ import {
   effect,
   forwardRef,
   ChangeDetectionStrategy,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -16,7 +18,7 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { SelectControl } from '../../shared/controls/select-control/select-control';
 import { DataPicker } from '../../shared/controls/data-picker/data-picker';
 import { InputControl } from '../../shared/controls/input-control/input-control';
@@ -50,6 +52,7 @@ export class ThirdExtra implements ControlValueAccessor, OnInit {
     { label: 'Female', value: 'female' },
     { label: 'Other', value: 'other' },
   ];
+  private destroyRef = inject(DestroyRef);
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
@@ -112,7 +115,7 @@ export class ThirdExtra implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit(): void {
-    this.innerControl.valueChanges.subscribe((val) => {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.onChange(this.innerControl.valid ? val : null);
       this.onTouched();
     });
