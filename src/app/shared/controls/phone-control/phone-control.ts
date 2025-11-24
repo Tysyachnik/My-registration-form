@@ -1,8 +1,18 @@
-import { Component, effect, forwardRef, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  forwardRef,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-phone-control',
@@ -23,8 +33,8 @@ export class PhoneControl extends BaseControl<string> implements OnInit {
   innerControl = new FormControl('');
   countryCode = input<string>('');
   prefix = signal<string>('');
-
   maskSignal = signal<string>('+0 (000) 000-00-000');
+  private destroyRef = inject(DestroyRef);
 
   constructor() {
     super();
@@ -50,19 +60,9 @@ export class PhoneControl extends BaseControl<string> implements OnInit {
   }
 
   ngOnInit() {
-    this.innerControl.valueChanges.subscribe((value) => {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.value = value;
       this.onChange(value);
     });
   }
-
-  // override writeValue(val: string | null): void {
-  //   console.log('val', val);
-  //   this.value = val;
-  //   this.innerControl.setValue(val, { emitEvent: false });
-  // }
-
-  // override registerOnChange(fn: any): void {
-  //   this.innerControl.valueChanges.subscribe(fn);
-  // }
 }
