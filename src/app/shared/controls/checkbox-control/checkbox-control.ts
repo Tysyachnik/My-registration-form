@@ -13,6 +13,7 @@ import {
 import { BaseControl } from '../base-control/base-control';
 import { FormControl, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { hasRequiredValidator } from '../../utilits/hasRequiredValidator';
 
 @Component({
   selector: 'app-checkbox-control',
@@ -33,6 +34,8 @@ export class CheckboxControl extends BaseControl<any> implements OnInit {
   }
 
   ngOnInit(): void {
+    this.required.set(hasRequiredValidator(this.ngControl?.control));
+
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.onChange(val);
       this.onTouched();
