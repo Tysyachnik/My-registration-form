@@ -21,6 +21,7 @@ import {
 import { AutoComplete } from 'primeng/autocomplete';
 import { BaseControl } from '../base-control/base-control';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { hasRequiredValidator } from '../../utilits/hasRequiredValidator';
 
 @Component({
   selector: 'app-select-control',
@@ -49,6 +50,7 @@ export class SelectControl extends BaseControl<any> implements OnInit {
 
   ngOnInit() {
     this.filteredOptions = [...this.options()];
+    this.required.set(hasRequiredValidator(this.ngControl?.control));
 
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.value = val;
