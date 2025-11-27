@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 })
 export class BaseControl<T> implements ControlValueAccessor {
   label = input<string>('');
-  required = input<boolean>(false);
+  required = signal<boolean>(false);
   innerControl: FormControl<T | null> = new FormControl<T | null>(null);
   value: T | null = null;
   disabled: boolean = false;

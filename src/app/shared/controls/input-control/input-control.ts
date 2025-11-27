@@ -22,6 +22,7 @@ import {
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { hasRequiredValidator } from '../../utilits/hasRequiredValidator';
 
 @Component({
   selector: 'app-input-control',
@@ -43,6 +44,7 @@ export class InputControl extends BaseControl<string> implements OnInit {
   }
 
   ngOnInit() {
+    this.required.set(hasRequiredValidator(this.ngControl?.control));
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.onChange(value);
       this.onTouched();
