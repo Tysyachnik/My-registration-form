@@ -10,7 +10,7 @@
     (onSelect)="onSelect($event)"
     (onBlur)="onBlur()"
     [appendTo]="appendTo()"
-    [class.invalid]="innerControl.invalid && innerControl.touched"
+    [class.invalid]="ngControl.control?.invalid && ngControl.control?.touched"
   />
 
   <span class="text-sm text-gray-700">{{ label() }}</span>
