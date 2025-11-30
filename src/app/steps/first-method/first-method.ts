@@ -5,9 +5,7 @@ import {
   DestroyRef,
   forwardRef,
   inject,
-  Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -50,7 +48,7 @@ export class FirstMethod implements ControlValueAccessor, OnInit {
   }
 
   writeValue(val: string): void {
-    this.innerControl.setValue(val, { emitEvent: false });
+    this.innerControl.setValue(val, { emitEvent: true });
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;

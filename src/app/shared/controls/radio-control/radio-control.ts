@@ -27,22 +27,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RadioControl extends BaseControl<string> implements OnInit {
-  registationWay: string | null = null;
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
-      this.registationWay = val;
       this.onChange(val);
       this.onTouched();
     });
   }
 
   override writeValue(val: string | null): void {
-    this.registationWay = val;
     this.innerControl.setValue(val, { emitEvent: false });
   }
-  onSelect(val: string) {
+  onSelect(val: string | null) {
     this.innerControl.setValue(val);
   }
 }

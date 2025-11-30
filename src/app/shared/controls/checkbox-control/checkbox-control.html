@@ -2,7 +2,7 @@
   <input
     type="checkbox"
     [formControl]="innerControl"
-    [class.invalid]="innerControl.invalid && innerControl.touched"
+    [class.invalid]="ngControl.control?.invalid && ngControl.control?.touched"
   />
   {{ label() }}
   <span class="text-sm font-medium">

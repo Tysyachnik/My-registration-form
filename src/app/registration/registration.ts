@@ -6,6 +6,7 @@ import {
   inject,
   OnInit,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { Step, StepPanel, StepperModule } from 'primeng/stepper';
 import { FourthConfirm } from '../steps/fourth-confirm/fourth-confirm';
@@ -13,7 +14,13 @@ import { ThirdExtra } from '../steps/third-extra/third-extra';
 import { SecondBasic } from '../steps/second-basic/second-basic';
 import { FirstMethod } from '../steps/first-method/first-method';
 import { ButtonModule } from 'primeng/button';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegistrationForm } from '../shared/interfaces/registration-form';
 import { RegistrationStep } from '../shared/enums/registration-step';
@@ -39,6 +46,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration implements OnInit {
+  @ViewChild(FirstMethod) firstMethodComponent!: FirstMethod;
   activeStep = signal(RegistrationStep.Method);
   RegistrationStep = RegistrationStep;
   form!: FormGroup<RegistrationForm>;
@@ -47,8 +55,10 @@ export class Registration implements OnInit {
   constructor(private fb: FormBuilder) {
     effect(() => {
       const step = this.activeStep();
-      if (step === 1) {
-        this.form.controls.method.setValue(null);
+
+      if (step === RegistrationStep.Method && this.firstMethodComponent) {
+        // this.firstMethodComponent.innerControl.setValue(null, { emitEvent: false });
+        // this.form.controls.method.setValue(null, { emitEvent: false });
       }
     });
   }
@@ -60,12 +70,27 @@ export class Registration implements OnInit {
     this.form.controls.method.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((val) => {
-        if (val === 'social') {
+        if (val === 'Social') {
           this.activeStep.set(RegistrationStep.Confirm);
 
-          this.form.controls.method.setValue(null);
+          this.firstMethodComponent.innerControl.setValue('');
+          this.form.controls.method.setValue('', { emitEvent: false });
         }
       });
+  }
+
+  clickOnStep(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    const clickedStep = target.closest('p-step') as HTMLElement | null;
+
+    if (!clickedStep) return;
+    const titleEl = clickedStep.querySelector('.p-step-title') as HTMLElement;
+    const nameOfStep = titleEl.innerText.trim();
+
+    if (nameOfStep === 'Method') {
+      this.activeStep.set(RegistrationStep.Method);
+    }
   }
 
   goTo(step: number) {

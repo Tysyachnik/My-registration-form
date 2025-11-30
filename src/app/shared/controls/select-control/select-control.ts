@@ -50,7 +50,15 @@ export class SelectControl extends BaseControl<any> implements OnInit {
 
   ngOnInit() {
     this.filteredOptions = [...this.options()];
-    this.required.set(hasRequiredValidator(this.ngControl?.control));
+
+    const control = this.ngControl?.control;
+    if (!control) return;
+
+    this.required.set(hasRequiredValidator(control));
+
+    control.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.required.set(hasRequiredValidator(control));
+    });
 
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.value = val;

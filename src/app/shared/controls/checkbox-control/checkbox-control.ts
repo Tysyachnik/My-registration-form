@@ -34,7 +34,14 @@ export class CheckboxControl extends BaseControl<any> implements OnInit {
   }
 
   ngOnInit(): void {
-    this.required.set(hasRequiredValidator(this.ngControl?.control));
+    const control = this.ngControl?.control;
+    if (!control) return;
+
+    this.required.set(hasRequiredValidator(control));
+
+    control.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.required.set(hasRequiredValidator(control));
+    });
 
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.onChange(val);

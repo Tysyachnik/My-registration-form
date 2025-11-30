@@ -1,5 +1,5 @@
 <div [formGroup]="innerControl" class="flex flex-col gap-4">
-  <app-input-control formControlName="adress" label="Adress" [required]="true"></app-input-control>
+  <app-input-control formControlName="adress" label="Adress"></app-input-control>
 
   <app-select-control
     formControlName="gender"
@@ -7,7 +7,6 @@
     [label]="'Choose a gender'"
     optionLabel="label"
     optionValue="value"
-    [required]="true"
   ></app-select-control>
 
   <app-data-picker formControlName="birthday" label="BirthDate"></app-data-picker>

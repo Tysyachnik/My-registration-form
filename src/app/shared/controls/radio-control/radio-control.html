@@ -4,6 +4,7 @@
     [value]="label()"
     [checked]="innerControl.value === label()"
     (change)="onSelect(label())"
+    [formControl]="innerControl"
   />
   {{ label() }}
 </label>

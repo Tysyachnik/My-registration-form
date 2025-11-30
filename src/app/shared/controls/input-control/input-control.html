@@ -13,6 +13,6 @@
     [disabled]="disabled"
     [formControl]="innerControl"
     (blur)="onTouched()"
-    [class.invalid]="innerControl.invalid && innerControl.touched"
+    [class.invalid]="ngControl.control?.invalid && ngControl.control?.touched"
   />
 </label>
