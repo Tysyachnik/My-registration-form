@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, forwardRef, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  forwardRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -7,9 +14,11 @@ import {
   ControlValueAccessor,
   FormsModule,
   FormControl,
+  Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxControl } from '../../shared/controls/checkbox-control/checkbox-control';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-fourth-confirm',
@@ -28,30 +37,19 @@ import { CheckboxControl } from '../../shared/controls/checkbox-control/checkbox
 })
 export class FourthConfirm implements ControlValueAccessor, OnInit {
   innerControl = new FormGroup({
-    terms: new FormControl<boolean>(false),
-    data: new FormControl<boolean>(false),
+    terms: new FormControl<boolean>(false, Validators.requiredTrue),
+    data: new FormControl<boolean>(false, Validators.requiredTrue),
     newsletter: new FormControl<boolean>(false),
   });
+  private destroyRef = inject(DestroyRef);
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
   ngOnInit(): void {
-    this.innerControl.valueChanges.subscribe(() => {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.checkValidity();
     });
-  }
-
-  private checkValidity() {
-    const termsValid = this.innerControl.controls['terms'].value;
-    const dataValid = this.innerControl.controls['data'].value;
-
-    if (termsValid && dataValid) {
-      this.onChange(true);
-      this.onTouched();
-    } else {
-      this.onChange(false);
-    }
   }
 
   writeValue(val: any): void {
@@ -64,5 +62,17 @@ export class FourthConfirm implements ControlValueAccessor, OnInit {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  private checkValidity() {
+    const termsValid = this.innerControl.controls['terms'].value;
+    const dataValid = this.innerControl.controls['data'].value;
+
+    if (termsValid && dataValid) {
+      this.onChange(true);
+      this.onTouched();
+    } else {
+      this.onChange(false);
+    }
   }
 }

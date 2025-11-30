@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   forwardRef,
-  Input,
+  inject,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -15,6 +15,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import { RadioControl } from '../../shared/controls/radio-control/radio-control';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-first-method',
@@ -34,24 +35,25 @@ import { RadioControl } from '../../shared/controls/radio-control/radio-control'
 export class FirstMethod implements ControlValueAccessor, OnInit {
   innerControl = new FormControl<string | null>(null);
   value: string | null = null;
+  private destroyRef = inject(DestroyRef);
 
   private onChange: any = () => {};
   private onTouched: any = () => {};
 
+  ngOnInit(): void {
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
+      this.onChange(val);
+      this.onTouched();
+    });
+  }
+
   writeValue(val: string): void {
-    this.innerControl.setValue(val, { emitEvent: false });
+    this.innerControl.setValue(val, { emitEvent: true });
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  ngOnInit(): void {
-    this.innerControl.valueChanges.subscribe((val) => {
-      this.onChange(val);
-      this.onTouched();
-    });
   }
 }

@@ -1,4 +1,10 @@
 <label class="flex items-center gap-2 cursor-pointer">
-  <input type="radio" value="value" [checked]="value === registationWay" (change)="onSelect()" />
+  <input
+    type="radio"
+    [value]="label()"
+    [checked]="innerControl.value === label()"
+    (change)="onSelect(label())"
+    [formControl]="innerControl"
+  />
   {{ label() }}
 </label>

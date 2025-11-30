@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   forwardRef,
   inject,
   input,
@@ -19,6 +21,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { hasRequiredValidator } from '../../utilits/hasRequiredValidator';
 
 @Component({
   selector: 'app-input-control',
@@ -26,21 +30,42 @@ import { InputTextModule } from 'primeng/inputtext';
   standalone: true,
   templateUrl: './input-control.html',
   styleUrl: './input-control.less',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputControl),
-      multi: true,
-    },
-  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputControl extends BaseControl<any> implements OnInit {
-  label = input<string>();
+export class InputControl extends BaseControl<string> implements OnInit {
   type = input<string>('text');
-  innerControl = new FormControl('');
-  required = input<boolean>(false);
+  private destroyRef = inject(DestroyRef);
+
+  constructor(@Optional() @Self() public ngControl: NgControl) {
+    super();
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   ngOnInit() {
-    this.innerControl.valueChanges.subscribe((value) => this.onChange(value));
+    const control = this.ngControl?.control;
+    if (!control) return;
+
+    this.required.set(hasRequiredValidator(control));
+
+    control.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.required.set(hasRequiredValidator(control));
+    });
+
+    this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
+      this.onChange(value);
+    });
+  }
+
+  override writeValue(val: string | null): void {
+    this.innerControl.setValue(val, { emitEvent: false });
+  }
+
+  override registerOnTouched(fn: any): void {
+    this.onTouched = () => {
+      this.innerControl.markAsTouched();
+      fn();
+    };
   }
 }
