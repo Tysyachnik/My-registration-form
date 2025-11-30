@@ -44,10 +44,17 @@ export class InputControl extends BaseControl<string> implements OnInit {
   }
 
   ngOnInit() {
-    this.required.set(hasRequiredValidator(this.ngControl?.control));
+    const control = this.ngControl?.control;
+    if (!control) return;
+
+    this.required.set(hasRequiredValidator(control));
+
+    control.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.required.set(hasRequiredValidator(control));
+    });
+
     this.innerControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.onChange(value);
-      this.onTouched();
     });
   }
 
